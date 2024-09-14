@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment{% endblock %}
+
+{% block content %}
+<h2>Make a Payment</h2>
+
+<p>Pay for your appointment with Dr. {{ appointment.doctor.user.username }} on {{ appointment.appointment_date }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="payment_method">Select Payment Method:</label>
+    <select name="payment_method" id="payment_method" required>
+        <option value="jazzcash">JazzCash</option>
+        <option value="easypaisa">EasyPaisa</option>
+    </select>
+    <button type="submit">Pay Now</button>
+</form>
+
+{% if messages %}
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}

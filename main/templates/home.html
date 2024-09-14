@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - MedConnect{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 50px 20px; background-color: #F0F4F8; border-radius: 10px; margin-bottom: 40px;">
+    <h1 style="font-size: 36px; color: #2C3E50; margin-bottom: 20px;">Welcome to MedConnect</h1>
+    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto;">At MedConnect, we bridge the gap between healthcare professionals and patients by providing seamless appointment booking, health management tools, and access to world-class medical advice. Whether you're looking for expert opinions, tracking your health, or scheduling an appointment with a doctor, MedConnect is your partner in healthcare.</p>
+</div>
+
+<!-- Key Features Section -->
+<div style="display: flex; justify-content: space-around; padding: 40px 0; background-color: #FFFFFF; border-radius: 10px;">
+    <div style="width: 30%; text-align: center;">
+        <img src="static/images/doctor.svg" alt="Doctor" style="width: 100px; margin-bottom: 20px;">
+        <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Connect with Doctors</h3>
+        <p style="font-size: 16px; color: #7F8C8D;">Browse our network of qualified medical professionals, filter by specialty, and book consultations with ease.</p>
+    </div>
+    <div style="width: 30%; text-align: center;">
+        <img src="static/images/appointment.svg" alt="Appointment" style="width: 100px; margin-bottom: 20px;">
+        <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Schedule Appointments</h3>
+        <p style="font-size: 16px; color: #7F8C8D;">Use our intuitive appointment system to schedule consultations, manage your calendar, and receive reminders.</p>
+    </div>
+    <div style="width: 30%; text-align: center;">
+        <img src="static/images/health.svg" alt="Health Management" style="width: 100px; margin-bottom: 20px;">
+        <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Manage Your Health</h3>
+        <p style="font-size: 16px; color: #7F8C8D;">Track your health data, access medical records, and receive personalized recommendations for better care.</p>
+    </div>
+</div>
+
+<!-- Why Choose MedConnect Section -->
+<div style="text-align: center; margin-top: 50px;">
+    <h2 style="font-size: 32px; color: #2C3E50; margin-bottom: 20px;">Why Choose MedConnect?</h2>
+    <p style="font-size: 18px; color: #7F8C8D; max-width: 900px; margin: 0 auto; margin-bottom: 40px;">MedConnect isn't just about booking appointments. We offer a complete healthcare solution that ensures you stay connected with your doctor, maintain your health, and get access to the latest medical advice. Our platform is designed with care, security, and ease of use, keeping your health journey simple yet effective.</p>
+</div>
+
+<!-- Testimonials Section -->
+<div style="background-color: #F0F4F8; padding: 50px 20px; border-radius: 10px;">
+    <h2 style="text-align: center; font-size: 28px; color: #2C3E50; margin-bottom: 30px;">What Our Users Say</h2>
+    <div style="display: flex; justify-content: space-around;">
+        <div style="width: 30%; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <p style="font-size: 16px; color: #7F8C8D;">"MedConnect made it easy for me to find a specialist when I needed one the most. The appointment process was seamless and the doctor was fantastic!"</p>
+            <h4 style="font-size: 18px; color: #34495E;">- John Doe</h4>
+        </div>
+        <div style="width: 30%; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <p style="font-size: 16px; color: #7F8C8D;">"As a frequent traveler, I love being able to manage my health on the go. The platform is intuitive and keeps me connected with my healthcare provider."</p>
+            <h4 style="font-size: 18px; color: #34495E;">- Jane Smith</h4>
+        </div>
+        <div style="width: 30%; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <p style="font-size: 16px; color: #7F8C8D;">"The ability to track my health and get reminders for follow-ups has improved my overall well-being. Highly recommend MedConnect!"</p>
+            <h4 style="font-size: 18px; color: #34495E;">- Sarah Lee</h4>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action Section -->
+<div style="text-align: center; margin-top: 50px;">
+    <h2 style="font-size: 28px; color: #2C3E50; margin-bottom: 20px;">Start Your Health Journey Today</h2>
+    <a href="{% url 'register_patient' %}" style="background-color: #2ECC71; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; cursor: pointer; transition: background-color 0.3s ease;">Register as a Patient</a>
+    <a href="{% url 'register_doctor' %}" style="background-color: #3498DB; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; margin-left: 20px; cursor: pointer; transition: background-color 0.3s ease;">Join as a Doctor</a>
+</div>
+
+{% endblock %}

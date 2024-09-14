@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Registration - MedConnect{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 32px; text-align: center; color: #2C3E50; margin-bottom: 20px;">Register as a Doctor</h2>
+
+<form method="POST" style="max-width: 600px; margin: 0 auto; background-color: #F8F9F9; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
+    {% csrf_token %}
+    
+    <div style="margin-bottom: 20px;">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+    </div>
+    
+    <div style="margin-bottom: 20px;">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        {{ form.password2.label_tag }}
+        {{ form.password2 }}
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        {{ form.specialization.label_tag }}
+        {{ form.specialization }}
+    </div>
+    
+    <div style="text-align: center;">
+        <button type="submit" style="background-color: #3498DB; color: white; padding: 12px 30px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease;">
+            Register
+        </button>
+    </div>
+</form>
+{% endblock %}

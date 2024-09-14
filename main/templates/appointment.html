@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointment - MedConnect{% endblock %}
+
+{% block content %}
+<h1>Book an Appointment</h1>
+<p>Choose a doctor and book an appointment at your convenience.</p>
+
+<form method="post">
+  {% csrf_token %} <!-- This is essential for security when submitting forms -->
+  
+  <label for="doctor">Select Doctor:</label>
+  <select id="doctor" name="doctor">
+    {% for doctor in doctors %}
+      <option value="{{ doctor.id }}">{{ doctor.user.username }} ({{ doctor.specialization }})</option>
+    {% endfor %}
+  </select>
+  <br><br>
+  
+  <label for="date">Select Date:</label>
+  <input type="date" id="date" name="date" required>
+  <br><br>
+  
+  <button type="submit">Book Appointment</button>
+</form>
+
+{% endblock %}
+

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Scan{% endblock %}
+
+{% block content %}
+<div class="upload-section">
+    <h2 class="upload-title">Upload a Scan for Analysis</h2>
+    <p class="upload-description">Quickly upload your scan for secure analysis. Our system will process the image and provide detailed feedback.</p>
+    
+    <form method="post" enctype="multipart/form-data" class="upload-form">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn-custom">Upload and Analyze</button>
+    </form>
+</div>
+
+<!-- Styles for Upload Section -->
+<style>
+    /* Upload Section Styling */
+    .upload-section {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .upload-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #34495E;
+        margin-bottom: 20px;
+    }
+
+    .upload-description {
+        font-size: 16px;
+        color: #7F8C8D;
+        margin-bottom: 30px;
+    }
+
+    .upload-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: left;
+    }
+
+    /* Custom Button Styling */
+    .btn-custom {
+        background-color: #3498DB;
+        color: white;
+        padding: 12px 30px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #2980B9;
+    }
+
+    /* Input Styling */
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        margin-top: 10px;
+        border: 1px solid #BDC3C7;
+        border-radius: 4px;
+        background-color: #ECF0F1;
+        transition: border-color 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+        border-color: #3498DB;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .upload-section {
+            padding: 20px;
+        }
+
+        .upload-title {
+            font-size: 24px;
+        }
+    }
+</style>
+{% endblock %}

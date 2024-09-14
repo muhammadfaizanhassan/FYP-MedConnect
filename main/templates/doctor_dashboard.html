@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<h1>Doctor Dashboard</h1>
+
+{% if appointments %}
+    <h2>Your Upcoming Appointments</h2>
+    <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 18px; text-align: left;">
+        <thead>
+            <tr style="background-color: #009879; color: white; text-align: left; font-weight: bold;">
+                <th style="padding: 12px 15px;">Patient</th>
+                <th style="padding: 12px 15px;">Date</th>
+                <th style="padding: 12px 15px;">Time</th>
+                <th style="padding: 12px 15px;">Confirmed</th>
+                <th style="padding: 12px 15px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr style="border-bottom: 1px solid #dddddd;">
+                <td style="padding: 12px 15px;">{{ appointment.patient.username }}</td>
+                <td style="padding: 12px 15px;">{{ appointment.appointment_date }}</td>
+                <td style="padding: 12px 15px;">{{ appointment.appointment_time }}</td>
+                <td style="padding: 12px 15px;">{{ appointment.is_confirmed|yesno:"Yes,No" }}</td>
+                <td style="padding: 12px 15px;">
+                    {% if not appointment.is_confirmed %}
+                        <form method="post" style="display: inline; margin: 0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                            <button type="submit" style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Confirm Appointment</button>
+                        </form>
+                    {% else %}
+                        <p style="color: #4CAF50; font-weight: bold;">Confirmed</p>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No appointments found.</p>
+{% endif %}
+<a href="{% url 'scans:upload_scan' %}" style="display: inline-block; margin-top: 20px; background-color: #009879; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+    Go to Kidney Model Analysis Tool
+</a>
+{% endblock %}

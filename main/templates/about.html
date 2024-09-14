@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - MedConnect{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 50px 20px; background-color: #F0F4F8; border-radius: 10px; margin-bottom: 40px;">
+    <h1 style="font-size: 36px; color: #2C3E50; margin-bottom: 20px;">About MedConnect</h1>
+    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto;">MedConnect is a platform designed to bring patients and medical professionals together, creating a seamless healthcare experience. We aim to revolutionize the way healthcare is accessed and managed by providing a comprehensive digital platform that allows patients to connect with top-tier doctors, book appointments with ease, and manage their health effectively.</p>
+</div>
+
+<!-- Our Mission Section -->
+<div style="text-align: center; margin: 50px 0;">
+    <h2 style="font-size: 32px; color: #2C3E50; margin-bottom: 20px;">Our Mission</h2>
+    <p style="font-size: 18px; color: #7F8C8D; max-width: 900px; margin: 0 auto; margin-bottom: 40px;">
+        At MedConnect, our mission is to empower individuals to take control of their health by making healthcare more accessible, efficient, and patient-centered. We believe in a future where everyone has access to the best medical care, regardless of their location or circumstances. By leveraging technology, we are closing the gap between patients and healthcare providers, ensuring that quality medical advice is just a click away.
+    </p>
+</div>
+
+<!-- Why MedConnect Section -->
+<div style="background-color: #FFFFFF; padding: 40px 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
+    <h2 style="font-size: 28px; color: #2C3E50; text-align: center; margin-bottom: 30px;">Why Choose MedConnect?</h2>
+    <div style="display: flex; justify-content: space-around;">
+        <div style="width: 30%; text-align: center;">
+            <img src="static/images/doctor_network.svg" alt="Doctor Network" style="width: 100px; margin-bottom: 20px;">
+            <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Extensive Doctor Network</h3>
+            <p style="font-size: 16px; color: #7F8C8D;">With over 500 verified medical professionals across various specialties, we ensure that patients have access to the best healthcare providers, wherever they are.</p>
+        </div>
+        <div style="width: 30%; text-align: center;">
+            <img src="static/images/secure_data.svg" alt="Secure Data" style="width: 100px; margin-bottom: 20px;">
+            <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Secure Health Data</h3>
+            <p style="font-size: 16px; color: #7F8C8D;">Your medical records and data are securely stored, with state-of-the-art encryption methods ensuring your privacy and confidentiality at all times.</p>
+        </div>
+        <div style="width: 30%; text-align: center;">
+            <img src="static/images/24_7_support.svg" alt="24/7 Support" style="width: 100px; margin-bottom: 20px;">
+            <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">24/7 Access to Care</h3>
+            <p style="font-size: 16px; color: #7F8C8D;">Our platform allows you to book appointments, access health records, and communicate with healthcare providers anytime, from any location.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Vision Section -->
+<div style="text-align: center; margin: 50px 0;">
+    <h2 style="font-size: 32px; color: #2C3E50; margin-bottom: 20px;">Our Vision</h2>
+    <p style="font-size: 18px; color: #7F8C8D; max-width: 900px; margin: 0 auto; margin-bottom: 40px;">
+        We envision a future where healthcare is not a privilege but a basic right for all. By harnessing the power of technology, we aim to create a world where everyone, regardless of their background, has easy access to the best medical advice, treatments, and services. Our goal is to make healthcare more efficient, effective, and personalized to meet the unique needs of each individual.
+    </p>
+</div>
+
+<!-- Call to Action Section -->
+<div style="text-align: center; margin-top: 50px;">
+    <h2 style="font-size: 28px; color: #2C3E50; margin-bottom: 20px;">Join MedConnect Today</h2>
+    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto 30px;">
+        Whether you are a patient seeking the best care or a medical professional looking to expand your reach, MedConnect is here to support you. Start your health journey with us and experience the future of healthcare.
+    </p>
+    <a href="{% url 'register_patient' %}" style="background-color: #2ECC71; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; cursor: pointer; transition: background-color 0.3s ease;">Register as a Patient</a>
+    <a href="{% url 'register_doctor' %}" style="background-color: #3498DB; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; margin-left: 20px; cursor: pointer; transition: background-color 0.3s ease;">Join as a Doctor</a>
+</div>
+
+{% endblock %}
