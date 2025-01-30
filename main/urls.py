@@ -44,4 +44,5 @@ urlpatterns = [
     
     #review
     path("review/<int:appointment_id>/", views.add_review, name="add_review"),
+    path('review/<int:review_id>/edit/', views.edit_review, name='edit_review'),
 ]

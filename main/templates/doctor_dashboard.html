@@ -38,6 +38,27 @@
       </p>
     </div>
 
+<!-- Patient Reviews Section -->
+<div class="mb-5">
+  <h3>Patient Reviews</h3>
+  {% with doctor.get_reviews as reviews %}
+      {% if reviews.exists %}
+          {% for review in reviews %}
+              <div class="card mb-3">
+                  <div class="card-body">
+                      <h5 class="card-title">Rating: {{ review.rating }} ⭐</h5>
+                      <p class="card-text">{{ review.comment|linebreaks }}</p>
+                      <p class="text-muted">Reviewed on: {{ review.created_at|date:"F j, Y, g:i a" }}</p>
+                  </div>
+              </div>
+          {% endfor %}
+      {% else %}
+          <p class="text-muted">No reviews available.</p>
+      {% endif %}
+  {% endwith %}
+</div>
+
+
     <!-- Appointments Section -->
     {% if appointments %}
       <div

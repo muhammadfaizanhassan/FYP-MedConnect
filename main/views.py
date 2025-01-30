@@ -205,22 +205,40 @@ from datetime import datetime
 
 from .models import Appointment, DoctorProfile, PatientProfile
 
+# views.py
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import DoctorProfile, Appointment, Review
+from django.contrib import messages
+
 @login_required
 def doctor_dashboard(request):
+    # Assuming the logged-in user is a doctor
     try:
-        doctor_profile = DoctorProfile.objects.get(user=request.user)
-        appointments = Appointment.objects.filter(doctor=doctor_profile).order_by('appointment_date', 'appointment_time')
-
-        context = {
-            'doctor_profile': doctor_profile,
-            'appointments': appointments,
-            'pending_appointments': appointments.filter(status='pending').count(),
-            'confirmed_appointments': appointments.filter(status='confirmed').count(),
-        }
-        return render(request, 'doctor_dashboard.html', context)
+        doctor_profile = request.user.doctorprofile
     except DoctorProfile.DoesNotExist:
-        messages.error(request, "You don't have permission to access the doctor dashboard.")
+        messages.error(request, "Doctor profile not found.")
         return redirect('home')
+
+    # Fetch upcoming appointments (today and future)
+    appointments = Appointment.objects.filter(
+        doctor=doctor_profile,
+        appointment_date__gte=datetime.today(),
+        status__in=['pending', 'confirmed']
+    ).prefetch_related('reports')  # Prefetch related reports to optimize queries
+
+    # Prefetch reviews to avoid N+1 queries
+    reviews = Review.objects.filter(appointment__doctor=doctor_profile).select_related('appointment')
+
+    context = {
+        'doctor': doctor_profile,
+        'appointments': appointments,
+        'reviews': reviews,  # Optional if accessing via doctor.reviews.all
+    }
+
+    return render(request, 'doctor_dashboard.html', context)
+
 
 
 @login_required
@@ -327,47 +345,58 @@ def doctor_confirm_appointment(request, appointment_id):
     # Optional: If you want a confirmation page
     return render(request, 'confirm_appointment.html', {'appointment': appointment})
 
-# views.py
 
+
+import json
 import stripe
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 from django.urls import reverse
 from .models import Appointment
 
-stripe.api_key = settings.STRIPE_SECRET_KEY  # Use your actual Stripe Secret Key
+stripe.api_key = settings.STRIPE_SECRET_KEY  # Your Stripe secret key
+
 
 @login_required
 def payment(request, appointment_id):
+    """
+    Endpoint for rendering the payment page (GET) or
+    creating a Stripe Checkout session (POST).
+    """
     appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user, is_confirmed=True)
 
     if request.method == 'POST':
-        # Grab the amount
-        amount_str = request.POST.get('amount', '')
+        # Attempt to parse JSON data from the request body
         try:
-            amount = float(amount_str)
-            if amount < 0:
-                raise ValueError("Invalid amount")
-        except ValueError:
-            messages.error(request, "Please enter a valid positive amount.")
-            return redirect('payment', appointment_id=appointment_id)
-
-        # Convert to cents
-        stripe_amount = int(amount * 100)
-
-        # Create Stripe Checkout Session (Server-side)
+            data = json.loads(request.body)
+            amount_str = data.get('amount')
+        except json.JSONDecodeError:
+            # Fallback to form data if JSON parsing fails
+            amount_str = request.POST.get('amount')
+        
+        # Validate the amount
         try:
-            checkout_session = stripe.checkout.Session.create(
+            amount_value = float(amount_str)
+            if amount_value <-1:
+                return JsonResponse({"error": "Please enter a valid, positive amount."}, status=400)
+        except (ValueError, TypeError):
+            return JsonResponse({"error": "Invalid amount provided."}, status=400)
+
+        # Convert dollars to cents
+        amount_cents = int(round(amount_value * 100))
+
+        # Create Stripe Checkout session
+        try:
+            session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[{
                     'price_data': {
                         'currency': 'usd',
-                        'product_data': {
-                            'name': f"Payment for Appointment #{appointment_id}",
-                        },
-                        'unit_amount': stripe_amount,
+                        'product_data': {'name': 'Doctor Appointment Payment'},
+                        'unit_amount': amount_cents,
                     },
                     'quantity': 1,
                 }],
@@ -375,36 +404,54 @@ def payment(request, appointment_id):
                 success_url=request.build_absolute_uri(reverse('payment_success')),
                 cancel_url=request.build_absolute_uri(reverse('payment_failure')),
             )
-            # Redirect user to Stripe Checkout
-            return redirect(checkout_session.url)
-        except Exception as e:
-            messages.error(request, f"Stripe error: {str(e)}")
-            return redirect('payment', appointment_id=appointment_id)
+            # (Optionally) Store appointment ID in session to retrieve after success
+            request.session['appointment_id_for_review'] = appointment.id
 
-    # GET request => show payment form
-    return render(request, 'payment.html', {
+            return JsonResponse({"checkout_url": session.url})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    # GET request: just render the payment form
+    context = {
         'appointment': appointment,
-        'stripe_public_key': settings.STRIPE_PUBLIC_KEY
-    })
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+    }
+    return render(request, 'payment.html', context)
 
 
 @login_required
 def payment_success(request):
+    appointment_id = request.session.get("appointment_id_for_review")
+    if appointment_id:
+        # Retrieve the appointment from the DB
+        appointment = Appointment.objects.get(id=appointment_id)
+        
+        # Mark it as paid
+        appointment.payment_status = True
+        appointment.save()
+    
     messages.success(request, "Your payment was successful!")
-    # Optional: You can mark appointment as paid here if you want
-    # But only do that after verifying the Stripe event if you want high integrity
-    return redirect('home')  # or your success page
+    return render(request, "payment_success.html", {"appointment_id": appointment_id})
 
-@login_required
+
 def payment_failure(request):
-    messages.error(request, "Payment was canceled or failed.")
-    return redirect('home')  # or your retry page
+    messages.error(request, "Payment failed. Please try again.")
+    
+    # If you have an appointment_id in session or as a URL param:
+    appointment_id = request.session.get('appointment_id_for_review')  # or from the URL
+    appointment = None
+
+    if appointment_id:
+        appointment = get_object_or_404(Appointment, id=appointment_id)
+    
+    return render(request, 'payment_failure.html', {'appointment': appointment})
+
 
 
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .models import Appointment, Review
 from .forms import ReviewForm
 
@@ -412,15 +459,15 @@ from .forms import ReviewForm
 def add_review(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user)
 
-    # Ensure the appointment is paid before allowing a review
+    # Ensure the appointment is already paid
     if not appointment.payment_status:
         messages.error(request, "You can only review paid appointments.")
         return redirect('home')
 
-    # If a review already exists, optionally prevent duplicates:
-    if hasattr(appointment, 'review'):
-        messages.info(request, "You have already submitted a review for this appointment.")
-        return redirect('home')
+    # Optional: If a review already exists, prevent duplicates
+    # if hasattr(appointment, 'review'):
+    #     messages.info(request, "You have already submitted a review for this appointment.")
+    #     return redirect('home')
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -429,17 +476,44 @@ def add_review(request, appointment_id):
             review.appointment = appointment
             review.save()
             messages.success(request, "Your review has been submitted successfully!")
-            return redirect('home')
+            return redirect('home')  # Or some success page
     else:
         form = ReviewForm()
 
     context = {
         'form': form,
-        'appointment': appointment
+        'appointment': appointment,
     }
     return render(request, 'add_review.html', context)
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Review
+from .forms import ReviewForm
+
+@login_required
+def edit_review(request, review_id):
+    """
+    Allows a user to edit an existing review.
+    """
+    review = get_object_or_404(Review, id=review_id, appointment__patient=request.user)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your review has been updated successfully!")
+            return redirect('home')  # Redirect to dashboard or home page
+    else:
+        form = ReviewForm(instance=review)
+
+    context = {
+        'form': form,
+        'review': review,
+    }
+    return render(request, 'edit_review.html', context)
 
 
 from .models import Contact

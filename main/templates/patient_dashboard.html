@@ -32,6 +32,7 @@
                                 <th>Time</th>
                                 <th>Confirmation Status</th>
                                 <th>Payment</th>
+                                <th>Review</th> <!-- NEW -->
                             </tr>
                         </thead>
                         <tbody>
@@ -53,24 +54,50 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if appointment.is_confirmed and not appointment.payment_status %}
-                                        <a href="{% url 'payment' appointment.id %}" class="btn btn-success btn-sm">
-                                            <i class="fas fa-credit-card"></i> Proceed to Payment
-                                        </a>
-                                    {% elif appointment.payment_status %}
+                                    {% if appointment.payment_status %}
                                         <span class="badge bg-success">
                                             <i class="fas fa-check-circle"></i> Paid
                                         </span>
+                                    {% elif appointment.is_confirmed %}
+                                        <a href="{% url 'payment' appointment.id %}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-credit-card"></i> Proceed to Payment
+                                        </a>
                                     {% else %}
                                         <span class="badge bg-secondary">
                                             <i class="fas fa-hourglass-half"></i> Awaiting Confirmation
                                         </span>
                                     {% endif %}
                                 </td>
+                                
+                                <!-- NEW Review Column -->
+                                <td>
+                                    {% if appointment.payment_status %}
+                                        {% if appointment.review %}
+                                            <!-- If a review already exists -->
+                                            <span class="badge bg-info text-dark">
+                                                <i class="fas fa-star"></i> Review Submitted
+                                            </span>
+                                            <!-- Or link to view/edit it, if you have a 'view_review' or 'edit_review' page -->
+                                            <!--
+                                            <a href="{% url 'edit_review' appointment.review.id %}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-pen"></i> Edit Review
+                                            </a>
+                                            -->
+                                        {% else %}
+                                            <!-- If no review exists yet, show a link to add one -->
+                                            <a href="{% url 'add_review' appointment.id %}" class="btn btn-secondary btn-sm">
+                                                <i class="fas fa-star"></i> Write a Review
+                                            </a>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">--</span>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                    
                 </div>
             </div>
         </div>

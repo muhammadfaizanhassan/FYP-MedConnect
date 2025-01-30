@@ -1,7 +1,5 @@
-<!-- templates/payment.html -->
 {% extends 'base.html' %}
 {% block title %}Payment{% endblock %}
-
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
@@ -17,18 +15,21 @@
                         <strong>{{ appointment.appointment_date }}</strong>.
                     </p>
                     <hr />
-                    <form method="POST">
+                    <form id="paymentForm" method="POST">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="amount" class="form-label fw-bold">Enter Payment Amount (USD):</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                name="amount"
-                                id="amount"
-                                class="form-control"
-                                required
-                            />
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input
+                                    type="number"
+                                    
+                                    name="amount"
+                                    id="amount"
+                                    class="form-control"
+                                    required
+                                />
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-success w-100">
                             Pay with Stripe
@@ -39,4 +40,69 @@
         </div>
     </div>
 </div>
+
+<script>
+document.getElementById('paymentForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    
+    const appointmentId = '{{ appointment.id }}';
+    const paymentAmount = document.getElementById('amount').value;
+
+    // Basic validation for positive amount
+    if (!paymentAmount || parseFloat(paymentAmount) <-1) {
+        alert('Please enter a valid, positive amount.');
+        return;
+    }
+
+    // Fetch the CSRF token from cookies
+    const csrfToken = getCookie('csrftoken');
+
+    fetch(`/payment/${appointmentId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+        },
+        body: JSON.stringify({ amount: paymentAmount }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            // Handle non-2xx HTTP responses
+            return response.json().then(data => {
+                throw new Error(data.error || 'Unknown error occurred.');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.checkout_url) {
+            // Redirect to Stripe Checkout
+            window.location.href = data.checkout_url;
+        } else {
+            alert(data.error || 'An unknown error occurred.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing your payment. Please try again later.');
+    });
+});
+
+// Helper to read cookie values by name
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with "name="?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
 {% endblock %}

@@ -2,9 +2,14 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from datetime import timedelta
+from django.db.models import Avg
+
+from django.db.models import Avg, Prefetch
+from django.db import models
+from django.contrib.auth.models import User
 
 class DoctorProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     specialization = models.CharField(max_length=255)
     office_location = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
@@ -14,8 +19,20 @@ class DoctorProfile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.specialization}"
 
+    def get_reviews(self):
+        """Returns all reviews for this doctor."""
+        return Review.objects.filter(appointment__doctor=self)
+
+    def average_rating(self):
+        """Returns the average rating of the doctor based on patient reviews."""
+        avg_rating = self.get_reviews().aggregate(Avg('rating'))['rating__avg']
+        return round(avg_rating, 1) if avg_rating else "No Ratings Yet"
+
     class Meta:
         verbose_name_plural = "Doctor Profiles"
+
+
+
 
 
 class PatientProfile(models.Model):
@@ -40,15 +57,9 @@ class PatientProfile(models.Model):
 
 
 
-class Appointment(models.Model):
-   
-    APPOINTMENT_STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('confirmed', 'Confirmed'),
-        ('cancelled', 'Cancelled'),
-        ('completed', 'Completed')
-    ]
+from django.core.exceptions import ValidationError
 
+class Appointment(models.Model):
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
     doctor = models.ForeignKey(DoctorProfile, on_delete=models.CASCADE, related_name='appointments')
     appointment_date = models.DateField()
@@ -58,7 +69,12 @@ class Appointment(models.Model):
     payment_status = models.BooleanField(default=False)
     status = models.CharField(
         max_length=20, 
-        choices=APPOINTMENT_STATUS_CHOICES, 
+        choices=[
+            ('pending', 'Pending'),
+            ('confirmed', 'Confirmed'),
+            ('cancelled', 'Cancelled'),
+            ('completed', 'Completed')
+        ], 
         default='pending'
     )
     medical_history = models.TextField(blank=True, null=True)  
@@ -72,6 +88,22 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"Appointment with Dr. {self.doctor.user.username} on {self.appointment_date}"
+
+    def clean(self):
+        # Check if the doctor is already booked for the same time slot
+        overlapping_appointments = Appointment.objects.filter(
+            doctor=self.doctor,
+            appointment_date=self.appointment_date,
+            appointment_time=self.appointment_time
+        ).exclude(id=self.id)
+
+        if overlapping_appointments.exists():
+            raise ValidationError("Doctor is already booked for this time slot.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+
 
 
 class Contact(models.Model):
@@ -109,11 +141,18 @@ class Report(models.Model):
 
 
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 class Review(models.Model):
     appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE)
-    rating = models.PositiveIntegerField(default=0)  # e.g., 1 to 5
+    rating = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],  # Ensure rating is between 1-5
+        default=1
+    )
     comment = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Review for Appointment #{self.appointment.id} - Rating: {self.rating}"
+
+

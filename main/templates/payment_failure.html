@@ -1,9 +1,47 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Payment Failed{% endblock %}
 {% block content %}
-<div class="container text-center py-5">
-    <h2 class="text-danger">Payment Failed</h2>
-    <p>Something went wrong. Please try again.</p>
-    <a href="{% url 'payment' appointment.id %}" class="btn btn-warning">Retry Payment</a>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center fade-in">
+            <div class="alert alert-danger" role="alert">
+                <h2 class="fw-bold">
+                    <i class="fas fa-times-circle"></i> Payment Failed
+                </h2>
+                <p class="lead">We encountered an issue while processing your payment. Please try again.</p>
+                <hr>
+                <p>If the problem persists, contact our support team for further assistance.</p>
+                {% if appointment %}
+                    <!-- Show the retry link only if appointment context is available -->
+                    <a href="{% url 'payment' appointment.id %}" class="btn btn-warning mt-3">
+                        Retry Payment
+                    </a>
+                {% else %}
+                    <a href="{% url 'home' %}" class="btn btn-secondary mt-3">
+                        Return to Dashboard
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
+
+<style>
+    /* Example fade-in animation, same as above */
+    .fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 {% endblock %}
