@@ -1,52 +1,431 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %}Book an Appointment - MedConnect{%endblock %} {% block content %}
+<section
+  class="py-5"
+  style="
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+  "
+>
+  <!-- Optional Decorative Background Shapes -->
+  <div
+    style="
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+          circle at 20% 50%,
+          rgba(255, 255, 255, 0.1),
+          transparent 50%
+        ),
+        radial-gradient(
+          circle at 80% 30%,
+          rgba(255, 255, 255, 0.1),
+          transparent 40%
+        );
+      z-index: 0;
+    "
+  ></div>
 
-{% block title %}Book an Appointment - MedConnect{% endblock %}
+  <div class="container" style="position: relative; z-index: 1">
+    <!-- Heading Section -->
+    <div class="text-center mb-5">
+      <h1
+        class="fw-bold"
+        style="
+          color: #070707;
+          font-weight: 700;
+          font-size: 2.5rem;
+          letter-spacing: 0.5px;
+        "
+      >
+        Book an Appointment
+      </h1>
+      <p
+        class="lead"
+        style="
+          color: #070707;
+          font-weight: 300;
+          max-width: 700px;
+          margin: 0 auto;
+        "
+      >
+        Find the right doctor by searching for their name or specialization, and
+        schedule an appointment at your convenience.
+      </p>
+    </div>
 
-{% block content %}
-<h1 style="font-size: 32px; text-align: center; color: #2C3E50; margin-bottom: 20px;">Book an Appointment</h1>
-<p style="font-size: 18px; text-align: center; color: #7F8C8D; margin-bottom: 30px;">Find the right doctor by searching for their name or specialization, and schedule an appointment at your convenience.</p>
+    <!-- Search Form -->
+    <form
+      method="get"
+      class="d-flex align-items-center justify-content-center mb-4"
+      style="max-width: 800px; margin: 0 auto"
+    >
+      <input
+        type="text"
+        name="search"
+        placeholder="Search for a doctor..."
+        value="{{ search_query }}"
+        class="form-control me-2"
+        style="
+          max-width: 500px;
+          font-size: 1rem;
+          border: 2px solid #ddd;
+          border-radius: 30px;
+          background-color: #fafafa;
+          padding: 12px 20px;
+          transition: border-color 0.3s, box-shadow 0.3s;
+        "
+        onfocus="this.style.borderColor='#2c3e50'; this.style.boxShadow='0 0 6px rgba(44,62,80,0.3)';"
+        onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+      />
+      <button
+        type="submit"
+        class="btn btn-primary px-4"
+        style="font-weight: 600; letter-spacing: 0.5px"
+      >
+        Search
+      </button>
+    </form>
 
-<!-- Search Form -->
-<form method="get" style="max-width: 600px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center;">
-    <input type="text" name="search" placeholder="Search for a doctor..." value="{{ search_query }}" 
-           style="width: 80%; padding: 10px; border: 1px solid #BDC3C7; border-radius: 4px; margin-right: 10px; font-size: 16px;">
-    <button type="submit" style="background-color: #3498DB; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Search</button>
-</form>
+    <!-- Appointment Form -->
+    <form
+      method="post"
+      class="p-4 rounded shadow-sm mx-auto"
+      style="
+        max-width: 600px;
+        border-radius: 10px;
+        font-weight: 300;
+        background: linear-gradient(
+      90deg,
+      rgba(65, 134, 180, 1) 0%,
+      rgba(99, 162, 224, 1) 50%,
+      rgba(65, 134, 180, 1) 100%
+    );
+        margin-top: 2rem;
+        position: relative;
+      "
+      enctype="multipart/form-data"
+    >
+      {% csrf_token %}
 
-<form method="post" style="max-width: 600px; margin: 0 auto; background-color: #F8F9F9; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
-  {% csrf_token %}
-  
-  <div style="margin-bottom: 20px;">
-    <label for="doctor" style="font-size: 18px; color: #34495E;">Select Doctor:</label>
-    <select id="doctor" name="doctor" required
-            style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #BDC3C7; border-radius: 4px; background-color: #ECF0F1;">
-      {% for doctor in doctors %}
-        <option value="{{ doctor.id }}">{{ doctor.user.username }} ({{ doctor.specialization }}) - Location: {{ doctor.office_location }}</option>
-      {% endfor %}
-    </select>
+      <!-- Decorative Gradient Strip (Optional) -->
+      <div
+        style="
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 8px;
+          background: linear-gradient(
+            90deg,
+            rgba(65, 134, 180, 1) 0%,
+            rgba(99, 162, 224, 1) 50%,
+            rgba(65, 134, 180, 1) 100%
+          );
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+        "
+      ></div>
+
+      <!-- Doctor Selection -->
+      <div class="mb-3 mt-3">
+        <label
+          for="doctor"
+          class="form-label fw-bold"
+          style="font-size: 1rem; font-weight: 500"
+        >
+          Select Doctor:
+        </label>
+        <select
+          id="doctor"
+          name="doctor"
+          class="form-select"
+          required
+          style="
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            font-weight: 400;
+          "
+          onfocus="this.style.borderColor='#2c3e50'; this.style.boxShadow='0 0 6px rgba(44,62,80,0.3)';"
+          onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+        >
+          <option value="" disabled selected>Select a doctor</option>
+          {% for doctor in doctors %}
+          <option value="{{ doctor.id }}">
+            {{ doctor.user.username }} ({{ doctor.specialization }}) - Location:
+            {{ doctor.office_location }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Appointment Date -->
+      <div class="mb-3">
+        <label
+          for="date"
+          class="form-label fw-bold"
+          style="font-size: 1rem; font-weight: 500"
+        >
+          Select Date:
+        </label>
+        <input
+          type="date"
+          id="date"
+          name="date"
+          class="form-control"
+          required
+          style="
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            font-weight: 400;
+          "
+          onfocus="this.style.borderColor='#2c3e50'; this.style.boxShadow='0 0 6px rgba(44,62,80,0.3)';"
+          onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+        />
+      </div>
+
+      <!-- Appointment Time -->
+      <div class="mb-3">
+        <label
+          for="time"
+          class="form-label fw-bold"
+          style="font-size: 1rem; font-weight: 500"
+        >
+          Select Time:
+        </label>
+        <input
+          type="time"
+          id="time"
+          name="time"
+          class="form-control"
+          required
+          style="
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            font-weight: 400;
+          "
+          onfocus="this.style.borderColor='#2c3e50'; this.style.boxShadow='0 0 6px rgba(44,62,80,0.3)';"
+          onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+        />
+      </div>
+
+      <!-- Patient Medical History (Optional) -->
+      <div class="mb-3">
+        <label
+          for="medical_history"
+          class="form-label fw-bold"
+          style="font-size: 1rem; font-weight: 500"
+        >
+          Medical History / Notes:
+        </label>
+        <textarea
+          id="medical_history"
+          name="medical_history"
+          class="form-control"
+          rows="4"
+          placeholder="Briefly describe your symptoms or relevant medical history..."
+          style="
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            font-weight: 400;
+            resize: vertical;
+          "
+          onfocus="this.style.borderColor='#2c3e50'; this.style.boxShadow='0 0 6px rgba(44,62,80,0.3)';"
+          onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+        ></textarea>
+      </div>
+
+      <!-- Upload Reports -->
+      <div class="mb-3">
+        <label
+          class="form-label fw-bold"
+          style="font-size: 1rem; font-weight: 500"
+        >
+          Upload Your Reports (if any):
+        </label>
+        <input
+          type="file"
+          name="reports"
+          multiple
+          class="form-control"
+          style="
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+            font-weight: 400;
+          "
+          onfocus="this.style.borderColor='#2c3e50'; this.style.boxShadow='0 0 6px rgba(44,62,80,0.3)';"
+          onblur="this.style.borderColor='#ddd'; this.style.boxShadow='none';"
+        />
+        <small class="text-muted" style="font-size: 0.875rem">
+          You can select multiple files by holding Ctrl/Cmd.
+        </small>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center mt-4">
+        <button
+          type="submit"
+          class="btn btn-success btn-lg px-5"
+          style="
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            letter-spacing: 1px;
+            transition: background-color 0.3s;
+          "
+          onmouseover="this.style.backgroundColor='#018749';"
+          onmouseout="this.style.backgroundColor='#28a745';"
+        >
+          Book Appointment
+        </button>
+      </div>
+    </form>
+
+    <!-- No Doctors Found -->
+    {% if not doctors %}
+    <p
+      class="text-danger text-center mt-4"
+      style="font-weight: 500; font-size: 1rem"
+    >
+      No doctors found matching your search criteria.
+    </p>
+    {% endif %}
   </div>
-  
-  <div style="margin-bottom: 20px;">
-    <label for="date" style="font-size: 18px; color: #34495E;">Select Date:</label>
-    <input type="date" id="date" name="date" required
-           style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #BDC3C7; border-radius: 4px; background-color: #ECF0F1;">
-  </div>
+</section>
 
-  <div style="margin-bottom: 20px;">
-    <label for="time" style="font-size: 18px; color: #34495E;">Select Time:</label>
-    <input type="time" id="time" name="time" required
-           style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #BDC3C7; border-radius: 4px; background-color: #ECF0F1;">
-  </div>
-  
-  <div style="text-align: center;">
-    <button type="submit" style="background-color: #a80af1; color: white; padding: 12px 30px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease;">
-      Book Appointment
-    </button>
-  </div>
-</form>
+<!-- Footer (Full Width) -->
+<footer
+  class="footer mt-auto py-4 w-100"
+  style="
+    background: linear-gradient(to right, #1f4037, #99f2c8);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+  "
+>
+  <div class="container-fluid">
+    <div class="row text-center text-md-start px-3 px-md-5">
+      <!-- About Section -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff; font-weight: 700">
+          About MedConnect
+        </h5>
+        <p style="font-size: 0.9rem; line-height: 1.6; font-weight: 300">
+          MedConnect is your trusted partner in healthcare, providing top-notch
+          medical services and solutions for your well-being. Stay connected
+          with us for the latest updates and resources.
+        </p>
+      </div>
 
-{% if not doctors %}
-    <p style="text-align: center; font-size: 16px; color: #E74C3C;">No doctors found matching your search criteria.</p>
-{% endif %}
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff; font-weight: 700">
+          Quick Links
+        </h5>
+        <ul style="list-style: none; padding: 0; font-weight: 300">
+          <li>
+            <a
+              href="{% url 'home' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 0.9rem; line-height: 2"
+            >
+              Home
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'about' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 0.9rem; line-height: 2"
+            >
+              About Us
+            </a>
+          </li>
+          <li>
+            <a
+              href="{% url 'contact' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 0.9rem; line-height: 2"
+            >
+              Contact
+            </a>
+          </li>
+        </ul>
+      </div>
 
+      <!-- Contact Info -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff; font-weight: 700">
+          Contact Us
+        </h5>
+        <p style="font-size: 0.9rem; line-height: 1.6; font-weight: 300">
+          <i class="fas fa-map-marker-alt"></i> 123 Health St., Wellness City,
+          CA<br />
+          <i class="fas fa-phone-alt"></i> +1 (555) 123-4567<br />
+          <i class="fas fa-envelope"></i>
+          <a
+            href="mailto:support@medconnect.com"
+            class="text-white text-decoration-none"
+            style="font-size: 0.9rem"
+          >
+            support@medconnect.com
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div
+      class="text-center mt-4"
+      style="
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        padding-top: 10px;
+        font-weight: 300;
+      "
+    >
+      <p style="font-size: 0.9rem; margin: 0">
+        &copy; 2024 MedConnect. All Rights Reserved.
+      </p>
+      <p style="font-size: 0.9rem; margin: 0">
+        <a
+          href="{% url 'privacy' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 0.9rem"
+        >
+          Privacy Policy
+        </a>
+        |
+        <a
+          href="{% url 'terms' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 0.9rem"
+        >
+          Terms of Service
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>
 {% endblock %}

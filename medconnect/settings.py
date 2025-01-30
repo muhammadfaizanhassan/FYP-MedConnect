@@ -32,7 +32,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'main',
-    "scans",
+    "chat",
+    'channels',
+    'scans.apps.ScansConfig',  # Register the app using the AppConfig path
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -72,6 +74,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'medconnect.wsgi.application'
 
+ASGI_APPLICATION = 'medconnect.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -83,6 +86,11 @@ DATABASES = {
     }
 }
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

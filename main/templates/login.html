@@ -1,46 +1,179 @@
 {% extends 'base.html' %}
-
 {% block title %}Login - MedConnect{% endblock %}
 
 {% block content %}
-<h2 style="font-size: 28px; text-align: center; color: #2C3E50; margin-bottom: 20px;">Login</h2>
+<section class="py-5" style="background: linear-gradient(90deg, rgba(65, 134, 180, 1) 0%, rgba(99, 162, 224, 1) 50%, rgba(65, 134, 180, 1) 100%);">
+    <div class="container">
+        <!-- Login Header -->
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-white">Login</h2>
+            <p class="text-white-50">Access your MedConnect account to manage appointments and more.</p>
+        </div>
 
-<form method="POST" style="max-width: 400px; margin: 0 auto; background-color: #F8F9F9; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
-    {% csrf_token %}
+        <!-- Login Form -->
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-lg p-4 rounded-lg border-0">
+                    <div class="card-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            
+                            <!-- Username Field -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label text-secondary fw-bold">Username</label>
+                                <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required>
+                            </div>
 
-    <div style="margin-bottom: 20px;">
-        <label for="username" style="font-size: 18px; color: #34495E;">Username:</label>
-        <input type="text" id="username" name="username" required
-               style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #BDC3C7; border-radius: 6px; background-color: #ECF0F1;">
+                            <!-- Password Field -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label text-secondary fw-bold">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg w-100 shadow-lg">Login</button>
+                            </div>
+                        </form>
+
+                        <!-- Error Messages -->
+                        {% if messages %}
+                        <div class="alert alert-danger mt-3" role="alert">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Registration Links -->
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        Not registered? 
+                        <a href="{% url 'register_doctor' %}" class="text-primary text-decoration-none">Register as Doctor</a> | 
+                        <a href="{% url 'register_patient' %}" class="text-primary text-decoration-none">Register as Patient</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div style="margin-bottom: 20px;">
-        <label for="password" style="font-size: 18px; color: #34495E;">Password:</label>
-        <input type="password" id="password" name="password" required
-               style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #BDC3C7; border-radius: 6px; background-color: #ECF0F1;">
+<!-- Footer -->
+<footer class="footer mt-auto py-4" style="background: linear-gradient(to right, #1f4037, #99f2c8); color: #fff;">
+    <div class="container">
+        <div class="row text-center text-md-start">
+            <!-- About Section -->
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold text-white">About MedConnect</h5>
+                <p class="text-white-50" style="font-size: 14px; line-height: 1.6;">
+                    MedConnect is your trusted partner in healthcare, providing top-notch medical services and solutions for your well-being. Stay connected with us for the latest updates and resources.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold text-white">Quick Links</h5>
+                <ul style="list-style: none; padding: 0;">
+                    <li>
+                        <a href="{% url 'home' %}" class="text-white text-decoration-none" style="font-size: 14px; line-height: 2;">Home</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'about' %}" class="text-white text-decoration-none" style="font-size: 14px; line-height: 2;">About Us</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'contact' %}" class="text-white text-decoration-none" style="font-size: 14px; line-height: 2;">Contact</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold text-white">Contact Us</h5>
+                <p class="text-white-50" style="font-size: 14px; line-height: 1.6;">
+                    <i class="fas fa-map-marker-alt"></i> 123 Health St., Wellness City, CA<br />
+                    <i class="fas fa-phone-alt"></i> +1 (555) 123-4567<br />
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:support@medconnect.com" class="text-white text-decoration-none">support@medconnect.com</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="text-center mt-4" style="border-top: 1px solid rgba(255, 255, 255, 0.3); padding-top: 10px;">
+            <p style="font-size: 14px; margin: 0;">&copy; 2024 MedConnect. All Rights Reserved.</p>
+            <p style="font-size: 14px; margin: 0;">
+                <a href="{% url 'privacy' %}" class="text-white text-decoration-none" style="font-size: 14px;">Privacy Policy</a> |
+                <a href="{% url 'terms' %}" class="text-white text-decoration-none" style="font-size: 14px;">Terms of Service</a>
+            </p>
+        </div>
     </div>
+</footer>
 
-    <div style="text-align: center; margin-bottom: 20px;">
-        <button type="submit" style="background-color: #3498DB; color: white; padding: 12px 30px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease;">
-            Login
-        </button>
-    </div>
-</form>
+<!-- Optional FontAwesome Icons for Contact -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
-<!-- Display error messages if login fails -->
-{% if messages %}
-    <div style="text-align: center; margin-top: 20px;">
-        <ul style="color: red; font-weight: bold;">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
+<!-- Custom CSS -->
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Poppins', Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-<p style="text-align: center; margin-top: 20px;">
-    Not registered? 
-    <a href="{% url 'register_doctor' %}" style="color: #3498DB; text-decoration: none;">Register as Doctor</a> |
-    <a href="{% url 'register_patient' %}" style="color: #3498DB; text-decoration: none;">Register as Patient</a>
-</p>
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.02);
+    }
+
+    /* Button Hover Effect */
+    button[type="submit"] {
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Link Hover Effect */
+    a.text-primary:hover {
+        text-decoration: underline;
+        color: #007bff;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 25px;
+        }
+
+        button[type="submit"] {
+            font-size: 16px;
+            padding: 12px 30px;
+        }
+
+        .footer {
+            padding: 15px;
+        }
+    }
+
+    /* Footer */
+    footer {
+        background: linear-gradient(to right, #1f4037, #99f2c8);
+        color: #fff;
+    }
+
+    footer p {
+        font-size: 14px;
+    }
+</style>
+
 {% endblock %}

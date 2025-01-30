@@ -1,30 +1,26 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .models import DoctorProfile, PatientProfile
 from .models import Appointment
 
-
-class DoctorRegistrationForm(forms.ModelForm):
-    username = forms.CharField(max_length=30, required=True)
+class DoctorRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
     specialization = forms.CharField(max_length=255)
+    office_location = forms.CharField(max_length=255, required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password1', 'password2']
 
-class PatientRegistrationForm(forms.ModelForm):
-    username = forms.CharField(max_length=30, required=True)
+class PatientRegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
     age = forms.IntegerField()
-    medical_history = forms.CharField(widget=forms.Textarea)
+    medical_history = forms.CharField(widget=forms.Textarea, required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
-
+        fields = ['username', 'email', 'password1', 'password2']
 
 class AppointmentForm(forms.ModelForm):
     class Meta:

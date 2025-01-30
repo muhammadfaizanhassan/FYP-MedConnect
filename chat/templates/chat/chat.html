@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% block title %}Chatbot - MedConnect{% endblock %}
+
+{% block content %}
+<!-- Outer Wrapper -->
+<section
+  style="
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(
+      90deg,
+      rgba(65, 134, 180, 1) 0%,
+      rgba(99, 162, 224, 1) 50%,
+      rgba(65, 134, 180, 1) 100%
+    );
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 0;
+  "
+>
+  <!-- Chat Container -->
+  <div
+    id="chatContainer"
+    style="
+      width: 650px;
+      max-width: 95%;
+       background: linear-gradient(
+      90deg,
+      rgba(65, 134, 180, 1) 0%,
+      rgba(99, 162, 224, 1) 50%,
+      rgba(65, 134, 180, 1) 100%
+    );
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      animation: fadeSlideIn 0.7s ease forwards;
+      transform: translateY(50px);
+      opacity: 0;
+      transition: width 0.6s ease, height 0.6s ease;
+    "
+  >
+    <h1
+      style="
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 20px;
+      "
+    >
+      Chatbot Interface
+    </h1>
+
+    <!-- Chat Form -->
+    <form id="chatForm" style="display: flex; gap: 8px; ">
+      {% csrf_token %}
+      <input
+        id="chatInput"
+        type="text"
+        name="prompt"
+        placeholder="Type your question..."
+        style="
+          flex: 1;
+          padding: 14px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          font-size: 1rem;
+          outline: none;
+          transition: border-color 0.3s;
+        "
+        onfocus="this.style.borderColor='#3498db';"
+        onblur="this.style.borderColor='#ccc';"
+      />
+      <button
+        type="submit"
+        style="
+          padding: 14px 24px;
+          background-color: #3498db;
+          border: none;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 0.95rem;
+          cursor: pointer;
+          font-weight: 500;
+          transition: transform 0.3s, box-shadow 0.3s;
+        "
+        onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(52,152,219,0.2)';"
+        onmouseout="this.style.transform='none'; this.style.boxShadow='none';"
+      >
+        Send
+      </button>
+    </form>
+
+    <!-- Chat Response Container -->
+    <div
+      id="responseContainer"
+      style="
+        padding: 14px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: 'Poppins', Arial, sans-serif;
+        white-space: pre-wrap;
+        line-height: 1.6;
+        color: #2c3e50;
+        max-height: 300px;
+        overflow-y: auto;
+        display: none; /* Hidden by default */
+      "
+    >
+      <!-- Real-time responses will be appended here -->
+    </div>
+  </div>
+
+  <!-- Floating Toggle Button -->
+  <button
+    id="floatingToggleBtn"
+    style="
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 58px;
+      height: 58px;
+      background-color: #2ecc71;
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 6px 15px rgba(46,204,113,0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: transform 0.3s, box-shadow 0.3s;
+    "
+    onmouseover="this.style.transform='scale(1.07)'; this.style.boxShadow='0 8px 24px rgba(46,204,113,0.4)';"
+    onmouseout="this.style.transform='none'; this.style.boxShadow='0 6px 15px rgba(46,204,113,0.3)';"
+    title="Toggle Chat History"
+  >
+    <i class="fas fa-comments" style="color: #fff; font-size: 1.2rem;"></i>
+  </button>
+</section>
+
+<!-- Styles -->
+<style>
+  @keyframes fadeSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<!-- JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const responseContainer = document.getElementById('responseContainer');
+    const floatingToggleBtn = document.getElementById('floatingToggleBtn');
+    const socket = new WebSocket('ws://127.0.0.1:8000/ws/chat/');
+
+    // Submit Form
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const prompt = chatInput.value.trim();
+      if (!prompt) return;
+
+      responseContainer.style.display = 'block'; // Show response container
+      responseContainer.textContent = ''; // Clear previous responses
+
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(prompt);
+      } else {
+        responseContainer.textContent = 'WebSocket connection not open.';
+      }
+      chatInput.value = ''; // Clear input field
+    });
+
+    // Handle WebSocket Messages
+    socket.onmessage = (event) => {
+      const newMessage = event.data;
+      responseContainer.textContent += newMessage; // Append real-time token
+      responseContainer.scrollTop = responseContainer.scrollHeight; // Auto-scroll
+    };
+
+    socket.onopen = () => console.log('WebSocket connected.');
+    socket.onclose = () => console.log('WebSocket disconnected.');
+    socket.onerror = (error) => console.error('WebSocket error:', error);
+
+    // Floating Button Toggle
+    floatingToggleBtn.addEventListener('click', () => {
+      if (responseContainer.style.display === 'none') {
+        responseContainer.style.display = 'block';
+      } else {
+        responseContainer.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+<!-- FontAwesome Icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

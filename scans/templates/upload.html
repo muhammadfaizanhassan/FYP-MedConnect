@@ -3,98 +3,167 @@
 {% block title %}Upload Scan{% endblock %}
 
 {% block content %}
-<div class="upload-section">
-    <h2 class="upload-title">Upload a Scan for Analysis</h2>
-    <p class="upload-description">Quickly upload your scan for secure analysis. Our system will process the image and provide detailed feedback.</p>
-    
-    <form method="post" enctype="multipart/form-data" class="upload-form">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ form.as_p }}
-        </div>
-        <button type="submit" class="btn-custom">Upload and Analyze</button>
-    </form>
-</div>
+<section
+  class="upload-section py-5"
+  style="
+    background: linear-gradient(90deg, rgba(28, 173, 218, 1) 0%, rgba(32, 130, 228, 1) 50%, rgba(28, 173, 218, 1) 100%);
+    animation: fadeSlideIn 0.8s ease-in-out;
+  "
+>
+  <div class="container">
+    <!-- Page Header -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold" style="color: #fff; font-size: 32px; text-transform: uppercase;">
+        Upload Your Scan
+      </h2>
+      <p style="color: #e0e0e0; font-size: 16px; max-width: 700px; margin: 0 auto;">
+        Drag & drop your scan here or browse to upload. Our secure system will process the file
+        and deliver precise analysis in moments.
+      </p>
+    </div>
 
-<!-- Styles for Upload Section -->
-<style>
-    /* Upload Section Styling */
-    .upload-section {
+    <!-- Drag and Drop Area -->
+    <div
+      id="drop-zone"
+      class="drag-and-drop mb-4"
+      style="
+        max-width: 650px;
+        margin: 0 auto;
+        padding: 60px;
+        border: 3px dashed rgba(255, 255, 255, 0.7);
+        border-radius: 20px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: #fff;
+      "
+      ondragover="event.preventDefault(); this.style.backgroundColor='rgba(255,255,255,0.2)';"
+      ondragleave="this.style.backgroundColor='rgba(255,255,255,0.1)';"
+      ondrop="handleDrop(event)"
+    >
+      <i class="fas fa-upload" style="font-size: 48px; margin-bottom: 10px; color: #fff;"></i>
+      <p style="font-size: 18px; margin: 0;">
+        Drag & drop your scan here, or <span style="font-weight: bold;">click to browse</span>
+      </p>
+      <input
+        type="file"
+        id="file-upload"
+        name="scan"
+        accept="image/*"
+        style="opacity: 0; position: absolute; width: 100%; height: 100%; cursor: pointer;"
+      />
+    </div>
+
+    <!-- Upload Form -->
+    <form
+      id="upload-form"
+      method="post"
+      enctype="multipart/form-data"
+      style="
         max-width: 600px;
         margin: 0 auto;
+        background-color: #fff;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         padding: 40px;
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         text-align: center;
-    }
+        animation: growIn 0.9s ease-in-out;
+      "
+    >
+      {% csrf_token %}
+      <div class="form-group mb-4 text-start">
+        <label for="file-upload" class="form-label fw-bold text-dark">
+          Select a File
+        </label>
+        {{ form.as_p }}
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        style="
+          background-color: #1e90ff;
+          border: none;
+          border-radius: 30px;
+          padding: 12px 40px;
+          font-size: 18px;
+          font-weight: bold;
+          color: #fff;
+          transition: all 0.3s ease;
+        "
+        onmouseover="this.style.backgroundColor='#0056b3'; this.style.boxShadow='0 8px 20px rgba(0, 86, 179, 0.5)';"
+        onmouseout="this.style.backgroundColor='#1e90ff'; this.style.boxShadow='none';"
+      >
+        Upload & Analyze
+      </button>
+    </form>
+  </div>
+</section>
 
-    .upload-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #34495E;
-        margin-bottom: 20px;
+<!-- Custom Styles and Animations -->
+<style>
+  /* Animations */
+  @keyframes fadeSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
     }
-
-    .upload-description {
-        font-size: 16px;
-        color: #7F8C8D;
-        margin-bottom: 30px;
+    100% {
+      opacity: 1;
+      transform: translateY(0);
     }
+  }
 
-    .upload-form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+  @keyframes growIn {
+    0% {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Drag-and-Drop Area Hover Effect */
+  .drag-and-drop:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+    transition: all 0.3s ease;
+  }
+
+  /* Form Field Focus Effect */
+  input[type="file"]:focus {
+    outline: none;
+    border-color: #1e90ff;
+    box-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    #drop-zone {
+      padding: 40px;
     }
 
     .form-group {
-        margin-bottom: 20px;
-        width: 100%;
-        text-align: left;
+      margin-bottom: 20px;
     }
 
-    /* Custom Button Styling */
-    .btn-custom {
-        background-color: #3498DB;
-        color: white;
-        padding: 12px 30px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+    button {
+      font-size: 16px;
+      padding: 10px 30px;
     }
-
-    .btn-custom:hover {
-        background-color: #2980B9;
-    }
-
-    /* Input Styling */
-    input, textarea {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        margin-top: 10px;
-        border: 1px solid #BDC3C7;
-        border-radius: 4px;
-        background-color: #ECF0F1;
-        transition: border-color 0.3s ease;
-    }
-
-    input:focus, textarea:focus {
-        border-color: #3498DB;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .upload-section {
-            padding: 20px;
-        }
-
-        .upload-title {
-            font-size: 24px;
-        }
-    }
+  }
 </style>
+
+<!-- JavaScript for Drag and Drop -->
+<script>
+  // Handle Drag-and-Drop Functionality
+  function handleDrop(event) {
+    event.preventDefault();
+    const input = document.getElementById("file-upload");
+    input.files = event.dataTransfer.files;
+    document.getElementById("upload-form").submit();
+  }
+</script>
 {% endblock %}

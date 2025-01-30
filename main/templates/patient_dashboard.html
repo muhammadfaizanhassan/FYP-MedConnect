@@ -1,53 +1,272 @@
 {% extends 'base.html' %}
-
 {% block title %}Patient Dashboard{% endblock %}
 
 {% block content %}
-<h2 style="font-size: 24px; margin-bottom: 20px;">Welcome to the Patient Dashboard</h2>
-<p style="font-size: 18px; margin-bottom: 30px;">Here you can view your upcoming appointments and their payment status.</p>
+<div class="container py-5">
+    <!-- Page Header -->
+    <div class="mb-5 text-center">
+        <h2 class="fw-bold">Welcome to the Patient Dashboard</h2>
+        <p class="lead">
+            Here you can view your upcoming appointments and manage your payment status.
+        </p>
+    </div>
 
-{% if appointments %}
-    <h3 style="font-size: 20px; margin-bottom: 20px;">Your Appointments</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 16px; text-align: left;">
-        <thead>
-            <tr style="background-color: #009879; color: white;">
-                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Doctor</th>
-                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Specialization</th>
-                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Date</th>
-                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Time</th>
-                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Confirmation Status</th>
-                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Payment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in appointments %}
-            <tr style="border-bottom: 1px solid #dddddd;">
-                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.doctor.user.username }}</td>
-                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.doctor.specialization }}</td>
-                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.appointment_date }}</td>
-                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.appointment_time }}</td>
-                <td style="padding: 12px 15px; border: 1px solid #dddddd;">
-                    {% if appointment.is_confirmed %}
-                        <span style="color: green; font-weight: bold;">Confirmed</span>
-                    {% else %}
-                        <span style="color: orange; font-weight: bold;">Pending Confirmation</span>
-                    {% endif %}
-                </td>
-                <td style="padding: 12px 15px; border: 1px solid #dddddd;">
-                    {% if appointment.is_confirmed and not appointment.payment_status %}
-                        <a href="{% url 'payment' appointment.id %}" style="background-color: #4CAF50; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">Proceed to Payment</a>
-                    {% elif appointment.payment_status %}
-                        <span style="color: green; font-weight: bold;">Paid</span>
-                    {% else %}
-                        <span style="color: orange; font-weight: bold;">Awaiting Confirmation</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p style="font-size: 16px; color: #666;">You have no upcoming appointments.</p>
-{% endif %}
+    {% if appointments %}
+        <!-- Card Container -->
+        <div class="card shadow-lg animated fadeInUp">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>Your Appointments</h3>
+                <button class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                <!-- Table with Hover Effects & Animations -->
+                <div class="table-responsive">
+                    <table class="table table-hover" id="appointmentsTable">
+                        <thead>
+                            <tr>
+                                <th>Doctor</th>
+                                <th>Specialization</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Confirmation Status</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr class="table-row">
+                                <td>{{ appointment.doctor.user.username }}</td>
+                                <td>{{ appointment.doctor.specialization }}</td>
+                                <td>{{ appointment.appointment_date|date:"F j, Y" }}</td>
+                                <td>{{ appointment.appointment_time|time:"g:i A" }}</td>
+                                <td>
+                                    {% if appointment.is_confirmed %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle"></i> Confirmed
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fas fa-exclamation-triangle"></i> Pending
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if appointment.is_confirmed and not appointment.payment_status %}
+                                        <a href="{% url 'payment' appointment.id %}" class="btn btn-success btn-sm">
+                                            <i class="fas fa-credit-card"></i> Proceed to Payment
+                                        </a>
+                                    {% elif appointment.payment_status %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle"></i> Paid
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-hourglass-half"></i> Awaiting Confirmation
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p class="text-muted mt-4 text-center">
+            You have no upcoming appointments.
+        </p>
+    {% endif %}
+</div>
+
+<!-- Custom CSS for Advanced Animations and Styling -->
+<style>
+    /* Animations */
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Card and Table Styling */
+    .card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: fadeInUp 1s ease;
+    }
+
+    .card-header {
+        background: linear-gradient(90deg, rgba(65, 134, 180, 1) 0%, rgba(99, 162, 224, 1) 50%, rgba(65, 134, 180, 1) 100%);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .card-header h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        transition: transform 0.3s ease;
+    }
+
+    th, td {
+        padding: 1rem;
+        font-size: 1rem;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+    thead {
+        background-color: #34495e;
+        color: #fff;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    tbody tr {
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    tbody tr:hover {
+        background-color: #f1f1f1;
+        transform: scale(1.02);
+    }
+
+    tbody tr .badge {
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.35em 0.75em;
+        border-radius: 12px;
+        transition: background-color 0.3s ease;
+    }
+
+    .badge.bg-success {
+        background-color: #27ae60;
+    }
+
+    .badge.bg-warning {
+        background-color: #f39c12;
+        color: #333;
+    }
+
+    .badge.bg-danger {
+        background-color: #e74c3c;
+    }
+
+    .badge.bg-secondary {
+        background-color: #bdc3c7;
+    }
+
+    /* Buttons */
+    .btn {
+        display: inline-block;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 25px;
+        transition: transform 0.2s ease, background-color 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #1abc9c;
+        transform: translateY(-2px);
+    }
+
+    .btn-sm {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .btn-success {
+        background-color: #27ae60;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+    }
+
+    /* Floating Action Button */
+    .floating-action-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #3498db;
+        color: white;
+        font-size: 1.5rem;
+        padding: 1rem;
+        border-radius: 50%;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        border: none;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+
+    .floating-action-button:hover {
+        background-color: #2980b9;
+        transform: scale(1.1);
+    }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+
+    .pagination a, .pagination span {
+        margin: 0 0.25rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background-color: #2980b9;
+        color: #fff;
+    }
+
+    .pagination .current {
+        background-color: #2980b9;
+        color: #fff;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .card-header h3 {
+            font-size: 1.2rem;
+        }
+
+        .table td {
+            font-size: 0.85rem;
+        }
+
+        .pagination a,
+        .pagination span {
+            font-size: 0.8rem;
+        }
+    }
+</style>
 
 {% endblock %}

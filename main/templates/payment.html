@@ -1,28 +1,148 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Payment{% endblock %}
 
 {% block content %}
-<h2>Make a Payment</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <!-- Card Header -->
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 fw-bold mb-0">Make a Payment</h2>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <!-- Appointment Details -->
+                    <p class="lead">
+                        Pay for your appointment with 
+                        <strong>Dr. {{ appointment.doctor.user.username }}</strong> on 
+                        <strong>{{ appointment.appointment_date }}</strong>.
+                    </p>
+                    <hr />
+                    <!-- Payment Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="payment_method" class="form-label fw-bold">Select Payment Method:</label>
+                            <select name="payment_method" id="payment_method" class="form-select" required>
+                                <option value="jazzcash">JazzCash</option>
+                                <option value="easypaisa">EasyPaisa</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-credit-card"></i> Pay Now
+                        </button>
+                    </form>
+                </div>
+                <!-- Card Footer for Messages -->
+                {% if messages %}
+                <div class="card-footer">
+                    <ul class="list-unstyled mb-0">
+                        {% for message in messages %}
+                            <li class="text-muted">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div> <!-- /card -->
+        </div> <!-- /col -->
+    </div> <!-- /row -->
+</div> <!-- /container -->
 
-<p>Pay for your appointment with Dr. {{ appointment.doctor.user.username }} on {{ appointment.appointment_date }}</p>
 
-<form method="POST">
-    {% csrf_token %}
-    <label for="payment_method">Select Payment Method:</label>
-    <select name="payment_method" id="payment_method" required>
-        <option value="jazzcash">JazzCash</option>
-        <option value="easypaisa">EasyPaisa</option>
-    </select>
-    <button type="submit">Pay Now</button>
-</form>
 
-{% if messages %}
-    <ul>
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<!-- Footer -->
+<footer
+  class="footer mt-auto py-4"
+  style="background: linear-gradient(to right, #1f4037, #99f2c8); color: #fff;"
+>
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <!-- About Section -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">About MedConnect</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          MedConnect is your trusted partner in healthcare, providing
+          top-notch medical services and solutions for your well-being. Stay
+          connected with us for the latest updates and resources.
+        </p>
+      </div>
 
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Quick Links</h5>
+        <ul style="list-style: none; padding: 0;">
+          <li>
+            <a
+              href="{% url 'home' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'about' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >About Us</a
+            >
+          </li>
+         
+          <li>
+            <a
+              href="{% url 'contact' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Contact Us</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          <i class="fas fa-map-marker-alt"></i> 123 Health St., Wellness City,
+          CA<br />
+          <i class="fas fa-phone-alt"></i> +1 (555) 123-4567<br />
+          <i class="fas fa-envelope"></i>
+          <a
+            href="mailto:support@medconnect.com"
+            class="text-white text-decoration-none"
+            >support@medconnect.com</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div
+      class="text-center mt-4"
+      style="border-top: 1px solid rgba(255, 255, 255, 0.3); padding-top: 10px;"
+    >
+      <p style="font-size: 14px; margin: 0;">
+        &copy; 2024 MedConnect. All Rights Reserved.
+      </p>
+      <p style="font-size: 14px; margin: 0;">
+        <a
+          href="{% url 'privacy' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Privacy Policy</a
+        >
+        |
+        <a
+          href="{% url 'terms' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Terms of Service</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>
 {% endblock %}

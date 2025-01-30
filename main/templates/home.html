@@ -3,60 +3,466 @@
 {% block title %}Home - MedConnect{% endblock %}
 
 {% block content %}
-<div style="text-align: center; padding: 50px 20px; background-color: #F0F4F8; border-radius: 10px; margin-bottom: 40px;">
-    <h1 style="font-size: 36px; color: #2C3E50; margin-bottom: 20px;">Welcome to MedConnect</h1>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto;">At MedConnect, we bridge the gap between healthcare professionals and patients by providing seamless appointment booking, health management tools, and access to world-class medical advice. Whether you're looking for expert opinions, tracking your health, or scheduling an appointment with a doctor, MedConnect is your partner in healthcare.</p>
-</div>
+<!-- Hero Section -->
+<section
+  class="hero-section text-center py-5 bg-light"
+  style="
+    background: linear-gradient(
+      90deg,
+      rgba(65, 134, 180, 1) 0%,
+      rgba(99, 162, 224, 1) 50%,
+      rgba(65, 134, 180, 1) 100%
+    );
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+  "
+>
+  <!-- Optional Animated Shapes or Particles (Advanced) -->
+  <div
+    style="
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at 20% 50%,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(255, 255, 255, 0.1) 0%,
+        transparent 40%
+      );
+      z-index: 0;
+    "
+  ></div>
 
-<!-- Key Features Section -->
-<div style="display: flex; justify-content: space-around; padding: 40px 0; background-color: #FFFFFF; border-radius: 10px;">
-    <div style="width: 30%; text-align: center;">
-        <img src="static/images/doctor.svg" alt="Doctor" style="width: 100px; margin-bottom: 20px;">
-        <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Connect with Doctors</h3>
-        <p style="font-size: 16px; color: #7F8C8D;">Browse our network of qualified medical professionals, filter by specialty, and book consultations with ease.</p>
+  <div class="container text-white" style="position: relative; z-index: 1;">
+    <h1 class="display-3 fw-bold mb-4">Welcome to MedConnect</h1>
+    <p
+      class="lead mx-auto"
+      style="
+        max-width: 700px;
+        font-weight: 300;
+        color: #f2f2f2;
+      "
+    >
+      Bridging the gap between healthcare professionals and patients through
+      seamless appointment booking, health management tools, and access to
+      world-class medical advice.
+    </p>
+    <div class="mt-4">
+      <a
+        href="{% url 'register_patient' %}"
+        class="btn btn-primary btn-lg px-4 me-3"
+        style="
+          background-color: #04395e;
+          border: none;
+          border-radius: 30px;
+          transition: background-color 0.3s;
+        "
+        onmouseover="this.style.backgroundColor='#032f4c';"
+        onmouseout="this.style.backgroundColor='#04395e';"
+      >
+        Get Started
+      </a>
+      <a
+        href="{% url 'register_doctor' %}"
+        class="btn btn-outline-light btn-lg px-4"
+        style="
+          border-radius: 30px;
+          border: 2px solid #fff;
+          color: #fff;
+          transition: background-color 0.3s, color 0.3s;
+        "
+        onmouseover="this.style.backgroundColor='#fff'; this.style.color='#04395e';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#fff';"
+      >
+        Join as a Doctor
+      </a>
     </div>
-    <div style="width: 30%; text-align: center;">
-        <img src="static/images/appointment.svg" alt="Appointment" style="width: 100px; margin-bottom: 20px;">
-        <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Schedule Appointments</h3>
-        <p style="font-size: 16px; color: #7F8C8D;">Use our intuitive appointment system to schedule consultations, manage your calendar, and receive reminders.</p>
-    </div>
-    <div style="width: 30%; text-align: center;">
-        <img src="static/images/health.svg" alt="Health Management" style="width: 100px; margin-bottom: 20px;">
-        <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Manage Your Health</h3>
-        <p style="font-size: 16px; color: #7F8C8D;">Track your health data, access medical records, and receive personalized recommendations for better care.</p>
-    </div>
-</div>
+  </div>
+</section>
 
-<!-- Why Choose MedConnect Section -->
-<div style="text-align: center; margin-top: 50px;">
-    <h2 style="font-size: 32px; color: #2C3E50; margin-bottom: 20px;">Why Choose MedConnect?</h2>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 900px; margin: 0 auto; margin-bottom: 40px;">MedConnect isn't just about booking appointments. We offer a complete healthcare solution that ensures you stay connected with your doctor, maintain your health, and get access to the latest medical advice. Our platform is designed with care, security, and ease of use, keeping your health journey simple yet effective.</p>
-</div>
+<!-- Features Section -->
+<section class="features-section py-5 bg-white">
+  <div class="container">
+    <div class="row text-center g-4">
+      <!-- Feature Card 1 -->
+      <div class="col-md-4">
+        <div
+          class="feature-card p-4 border rounded shadow-sm h-100"
+          style="
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #f8f9fa;
+          "
+          onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.transform='none'; this.style.boxShadow='none';"
+        >
+          {% load static %}
+          <img
+            src="{% static 'main/images/1.jpg' %}"
+            alt="Doctor Icon"
+            class="img-fluid mb-3"
+            style="max-height: 150px; object-fit: contain;"
+          />
+          <h3 class="text-dark fw-bold" style="font-size: 1.25rem;">
+            Connect with Doctors
+          </h3>
+          <p class="text-muted" style="font-weight: 300;">
+            Access a network of qualified medical professionals and book
+            consultations with ease.
+          </p>
+        </div>
+      </div>
+
+      <!-- Feature Card 2 -->
+      <div class="col-md-4">
+        <div
+          class="feature-card p-4 border rounded shadow-sm h-100"
+          style="
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #f8f9fa;
+          "
+          onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.transform='none'; this.style.boxShadow='none';"
+        >
+          {% load static %}
+          <img
+            src="{% static 'main/images/2.jpg' %}"
+            alt="Appointment Icon"
+            class="img-fluid mb-3"
+            style="max-height: 150px; object-fit: contain;"
+          />
+          <h3 class="text-dark fw-bold" style="font-size: 1.25rem;">
+            Schedule Appointments
+          </h3>
+          <p class="text-muted" style="font-weight: 300;">
+            Use our intuitive tools to manage your calendar and receive timely
+            reminders.
+          </p>
+        </div>
+      </div>
+
+      <!-- Feature Card 3 -->
+      <div class="col-md-4">
+        <div
+          class="feature-card p-4 border rounded shadow-sm h-100"
+          style="
+            transition: transform 0.3s, box-shadow 0.3s;
+            background-color: #f8f9fa;
+          "
+          onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.15)';"
+          onmouseout="this.style.transform='none'; this.style.boxShadow='none';"
+        >
+          {% load static %}
+          <img
+            src="{% static 'main/images/3.jpg' %}"
+            alt="Health Management Icon"
+            class="img-fluid mb-3"
+            style="max-height: 150px; object-fit: contain;"
+          />
+          <h3 class="text-dark fw-bold" style="font-size: 1.25rem;">
+            Manage Your Health
+          </h3>
+          <p class="text-muted" style="font-weight: 300;">
+            Track your health records, monitor progress, and get personalized
+            care recommendations.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section
+  class="why-choose-section py-5"
+  style="
+    background: linear-gradient(
+      90deg,
+      rgba(65, 134, 180, 1) 0%,
+      rgba(99, 162, 224, 1) 50%,
+      rgba(65, 134, 180, 1) 100%
+    );
+    color: #101111;
+  "
+>
+  <div class="container text-center">
+    <h2
+      class="fw-bold mb-4"
+      style="
+        color: #ffffff;
+        font-size: 2rem;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      "
+    >
+      Why Choose MedConnect?
+    </h2>
+    <p
+      class="lead text-muted mx-auto"
+      style="
+        max-width: 800px;
+        color: #f0f0f0 !important;
+        font-weight: 300;
+      "
+    >
+      MedConnect offers a comprehensive healthcare platform designed for
+      simplicity, security, and effectiveness. Stay connected with your
+      doctor, maintain your health records, and access expert advice
+      effortlessly.
+    </p>
+  </div>
+</section>
 
 <!-- Testimonials Section -->
-<div style="background-color: #F0F4F8; padding: 50px 20px; border-radius: 10px;">
-    <h2 style="text-align: center; font-size: 28px; color: #2C3E50; margin-bottom: 30px;">What Our Users Say</h2>
-    <div style="display: flex; justify-content: space-around;">
-        <div style="width: 30%; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-            <p style="font-size: 16px; color: #7F8C8D;">"MedConnect made it easy for me to find a specialist when I needed one the most. The appointment process was seamless and the doctor was fantastic!"</p>
-            <h4 style="font-size: 18px; color: #34495E;">- John Doe</h4>
+<section class="testimonials-section py-5 bg-white">
+  <div class="container">
+    <h2
+      class="text-center fw-bold mb-5"
+      style="color: #4186b4; font-size: 2rem;"
+    >
+      What Our Users Say
+    </h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div
+          class="testimonial-card p-4 shadow-sm border-0 h-100"
+          style="
+            border-radius: 10px;
+            background: #fafafa;
+            transition: transform 0.3s, box-shadow 0.3s;
+          "
+          onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.1)';"
+          onmouseout="this.style.transform='none'; this.style.boxShadow='none';"
+        >
+          <p class="text-muted" style="font-weight: 300;">
+            "MedConnect made it easy for me to find a specialist and book an
+            appointment. The experience was seamless!"
+          </p>
+          <h6 class="text-dark fw-semibold" style="font-size: 1rem;">
+            - John Doe
+          </h6>
         </div>
-        <div style="width: 30%; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-            <p style="font-size: 16px; color: #7F8C8D;">"As a frequent traveler, I love being able to manage my health on the go. The platform is intuitive and keeps me connected with my healthcare provider."</p>
-            <h4 style="font-size: 18px; color: #34495E;">- Jane Smith</h4>
+      </div>
+      <div class="col-md-4">
+        <div
+          class="testimonial-card p-4 shadow-sm border-0 h-100"
+          style="
+            border-radius: 10px;
+            background: #fafafa;
+            transition: transform 0.3s, box-shadow 0.3s;
+          "
+          onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.1)';"
+          onmouseout="this.style.transform='none'; this.style.boxShadow='none';"
+        >
+          <p class="text-muted" style="font-weight: 300;">
+            "I can manage my health on the go. The platform is intuitive and
+            keeps me connected."
+          </p>
+          <h6 class="text-dark fw-semibold" style="font-size: 1rem;">
+            - Jane Smith
+          </h6>
         </div>
-        <div style="width: 30%; background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-            <p style="font-size: 16px; color: #7F8C8D;">"The ability to track my health and get reminders for follow-ups has improved my overall well-being. Highly recommend MedConnect!"</p>
-            <h4 style="font-size: 18px; color: #34495E;">- Sarah Lee</h4>
+      </div>
+      <div class="col-md-4">
+        <div
+          class="testimonial-card p-4 shadow-sm border-0 h-100"
+          style="
+            border-radius: 10px;
+            background: #fafafa;
+            transition: transform 0.3s, box-shadow 0.3s;
+          "
+          onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.1)';"
+          onmouseout="this.style.transform='none'; this.style.boxShadow='none';"
+        >
+          <p class="text-muted" style="font-weight: 300;">
+            "Tracking my health and getting reminders has significantly
+            improved my well-being."
+          </p>
+          <h6 class="text-dark fw-semibold" style="font-size: 1rem;">
+            - Sarah Lee
+          </h6>
         </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
 
 <!-- Call to Action Section -->
-<div style="text-align: center; margin-top: 50px;">
-    <h2 style="font-size: 28px; color: #2C3E50; margin-bottom: 20px;">Start Your Health Journey Today</h2>
-    <a href="{% url 'register_patient' %}" style="background-color: #2ECC71; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; cursor: pointer; transition: background-color 0.3s ease;">Register as a Patient</a>
-    <a href="{% url 'register_doctor' %}" style="background-color: #3498DB; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; margin-left: 20px; cursor: pointer; transition: background-color 0.3s ease;">Join as a Doctor</a>
-</div>
+<section
+  class="call-to-action-section text-center py-5 text-white"
+  style="
+    background: linear-gradient(
+      90deg,
+      rgba(65, 134, 180, 1) 0%,
+      rgba(99, 162, 224, 1) 50%,
+      rgba(65, 134, 180, 1) 100%
+    );
+  "
+>
+  <div class="container">
+    <h2
+      class="fw-bold mb-4"
+      style="font-size: 2rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);"
+    >
+      Start Your Health Journey Today
+    </h2>
+    <div>
+      <a
+        href="{% url 'register_patient' %}"
+        class="btn btn-success btn-lg px-4 me-3"
+        style="
+          font-weight: 600;
+          border-radius: 30px;
+          transition: background-color 0.3s;
+        "
+        onmouseover="this.style.backgroundColor='#018749';"
+        onmouseout="this.style.backgroundColor='#28a745';"
+      >
+        Register as a Patient
+      </a>
+      <a
+        href="{% url 'register_doctor' %}"
+        class="btn btn-outline-light btn-lg px-4"
+        style="
+          font-weight: 600;
+          border-radius: 30px;
+          border: 2px solid #fff;
+          color: #fff;
+          transition: background-color 0.3s, color 0.3s;
+        "
+        onmouseover="this.style.backgroundColor='#fff'; this.style.color='#28a745';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#fff';"
+      >
+        Join as a Doctor
+      </a>
+    </div>
+  </div>
+</section>
 
+
+
+<!-- Footer -->
+<footer
+  class="footer mt-auto py-4"
+  style="
+    background: linear-gradient(to right, #1f4037, #99f2c8);
+    color: #fff;
+  "
+>
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <!-- About Section -->
+      <div class="col-md-4 mb-4">
+        <h5
+          class="fw-bold"
+          style="color: #fff; font-weight: 700; font-size: 1.25rem;"
+        >
+          About MedConnect
+        </h5>
+        <p style="font-size: 0.9rem; line-height: 1.6; font-weight: 300;">
+          MedConnect is your trusted partner in healthcare, providing
+          top-notch medical services and solutions for your well-being. Stay
+          connected with us for the latest updates and resources.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4">
+        <h5
+          class="fw-bold"
+          style="color: #fff; font-weight: 700; font-size: 1.25rem;"
+        >
+          Quick Links
+        </h5>
+        <ul style="list-style: none; padding: 0;">
+          <li>
+            <a
+              href="{% url 'home' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 0.9rem; line-height: 2; font-weight: 300;"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'about' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 0.9rem; line-height: 2; font-weight: 300;"
+              >About Us</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'contact' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 0.9rem; line-height: 2; font-weight: 300;"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-md-4 mb-4">
+        <h5
+          class="fw-bold"
+          style="color: #fff; font-weight: 700; font-size: 1.25rem;"
+        >
+          Contact Us
+        </h5>
+        <p style="font-size: 0.9rem; line-height: 1.6; font-weight: 300;">
+          <i class="fas fa-map-marker-alt"></i> 123 Health St., Wellness City,
+          CA<br />
+          <i class="fas fa-phone-alt"></i> +1 (555) 123-4567<br />
+          <i class="fas fa-envelope"></i>
+          <a
+            href="mailto:support@medconnect.com"
+            class="text-white text-decoration-none"
+            style="font-weight: 300;"
+            >support@medconnect.com</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div
+      class="text-center mt-4"
+      style="
+        border-top: 1px solid rgba(255, 255, 255, 0.3);
+        padding-top: 10px;
+      "
+    >
+      <p style="font-size: 0.9rem; margin: 0; font-weight: 300;">
+        &copy; 2024 MedConnect. All Rights Reserved.
+      </p>
+      <p style="font-size: 0.9rem; margin: 0; font-weight: 300;">
+        <a
+          href="{% url 'privacy' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 0.9rem;"
+          >Privacy Policy</a
+        >
+        |
+        <a
+          href="{% url 'terms' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 0.9rem;"
+          >Terms of Service</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Optional FontAwesome Icons for Contact -->
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>
 {% endblock %}

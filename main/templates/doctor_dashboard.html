@@ -1,48 +1,258 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Doctor Dashboard{% endblock %}
 
 {% block content %}
-<h1>Doctor Dashboard</h1>
+<section
+  class="py-5"
+  style="
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    color: #333;
+  "
+>
+  <div class="container">
+    <!-- Dashboard Header -->
+    <div class="text-center mb-5">
+      <h1
+        class="fw-bold"
+        style="
+          font-size: 2rem;
+          margin-bottom: 0.2rem;
+          letter-spacing: 0.5px;
+        "
+      >
+        Doctor Dashboard
+      </h1>
+      <p
+        style="
+          font-size: 1rem;
+          max-width: 600px;
+          margin: 0 auto;
+          font-weight: 300;
+          color: #666;
+        "
+      >
+        Review upcoming appointments, patient reports, and medical histories.
+      </p>
+    </div>
 
-{% if appointments %}
-    <h2>Your Upcoming Appointments</h2>
-    <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 18px; text-align: left;">
-        <thead>
-            <tr style="background-color: #009879; color: white; text-align: left; font-weight: bold;">
-                <th style="padding: 12px 15px;">Patient</th>
-                <th style="padding: 12px 15px;">Date</th>
-                <th style="padding: 12px 15px;">Time</th>
-                <th style="padding: 12px 15px;">Confirmed</th>
-                <th style="padding: 12px 15px;">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in appointments %}
-            <tr style="border-bottom: 1px solid #dddddd;">
-                <td style="padding: 12px 15px;">{{ appointment.patient.username }}</td>
-                <td style="padding: 12px 15px;">{{ appointment.appointment_date }}</td>
-                <td style="padding: 12px 15px;">{{ appointment.appointment_time }}</td>
-                <td style="padding: 12px 15px;">{{ appointment.is_confirmed|yesno:"Yes,No" }}</td>
-                <td style="padding: 12px 15px;">
-                    {% if not appointment.is_confirmed %}
-                        <form method="post" style="display: inline; margin: 0;">
-                            {% csrf_token %}
-                            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
-                            <button type="submit" style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Confirm Appointment</button>
-                        </form>
-                    {% else %}
-                        <p style="color: #4CAF50; font-weight: bold;">Confirmed</p>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>No appointments found.</p>
-{% endif %}
-<a href="{% url 'scans:upload_scan' %}" style="display: inline-block; margin-top: 20px; background-color: #009879; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-    Go to Kidney Model Analysis Tool
-</a>
+    <!-- Appointments Section -->
+    {% if appointments %}
+      <div
+        style="
+          background-color: #fafafa;
+          padding: 1.5rem;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        "
+      >
+        <h2
+          class="fw-bold mb-3"
+          style="font-size: 1.25rem; letter-spacing: 0.5px;"
+        >
+          Your Upcoming Appointments
+        </h2>
+
+        <!-- Advanced "borderless" layout -->
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(
+              7,
+              minmax(80px, auto)
+            ); /* 7 columns to match the data points */
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #333;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid #ddd;
+          "
+        >
+          <!-- Table Header Simulation -->
+          <div style="font-weight: 600;">Patient</div>
+          <div style="font-weight: 600;">Date</div>
+          <div style="font-weight: 600;">Time</div>
+          <div style="font-weight: 600;">Confirmed</div>
+          <div style="font-weight: 600;">Reports</div>
+          <div style="font-weight: 600;">Medical History</div>
+          <div style="font-weight: 600;">Action</div>
+        </div>
+
+        <!-- Rows -->
+        {% for appointment in appointments %}
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(7, minmax(80px, auto));
+              gap: 0.5rem;
+              align-items: center;
+              padding: 0.8rem 0;
+              border-bottom: 1px solid #eee;
+              transition: background-color 0.3s, box-shadow 0.3s;
+            "
+            onmouseover="this.style.backgroundColor='#f5f5f5'; this.style.boxShadow='inset 0 2px 6px rgba(0,0,0,0.05)';"
+            onmouseout="this.style.backgroundColor='transparent'; this.style.boxShadow='none';"
+          >
+            <!-- Patient -->
+            <div>
+              {{ appointment.patient.username }}
+            </div>
+            <!-- Date -->
+            <div>
+              {{ appointment.appointment_date }}
+            </div>
+            <!-- Time -->
+            <div>
+              {{ appointment.appointment_time }}
+            </div>
+            <!-- Confirmed -->
+            <div>
+              {% if appointment.is_confirmed %}
+                <span
+                  style="
+                    background-color: #2ecc71;
+                    color: #fff;
+                    padding: 0.2rem 0.5rem;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                  "
+                  >Yes</span
+                >
+              {% else %}
+                <span
+                  style="
+                    background-color: #e74c3c;
+                    color: #fff;
+                    padding: 0.2rem 0.5rem;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                  "
+                  >No</span
+                >
+              {% endif %}
+            </div>
+
+            <!-- Reports -->
+            <div>
+              {% if appointment.reports.all %}
+                <ul
+                  style="
+                    padding-left: 1rem;
+                    margin: 0;
+                    list-style: disc;
+                  "
+                >
+                  {% for report in appointment.reports.all %}
+                    <li style="margin-bottom: 3px;">
+                      <a
+                        href="{{ report.file.url }}"
+                        download
+                        style="
+                          text-decoration: none;
+                          color: #2980b9;
+                          font-size: 0.85rem;
+                        "
+                        >Download {{ report.file.name }}</a
+                      >
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <span
+                  style="
+                    color: #999;
+                    font-size: 0.85rem;
+                  "
+                  >No Reports</span
+                >
+              {% endif %}
+            </div>
+
+            <!-- Medical History -->
+            <div style="font-size: 0.85rem; white-space: pre-wrap;">
+              {% if appointment.medical_history %}
+                {{ appointment.medical_history }}
+              {% else %}
+                <span style="color: #999;">No History Provided</span>
+              {% endif %}
+            </div>
+
+            <!-- Action -->
+            <div>
+              {% if not appointment.is_confirmed %}
+                <form
+                  method="post"
+                  action="{% url 'doctor_confirm_appointment' appointment.id %}"
+                  style="display: inline;"
+                >
+                  {% csrf_token %}
+                  <button
+                    type="submit"
+                    style="
+                      background-color: #2980b9;
+                      color: #fff;
+                      border: none;
+                      padding: 0.3rem 0.6rem;
+                      border-radius: 20px;
+                      font-size: 0.8rem;
+                      cursor: pointer;
+                      transition: background-color 0.3s;
+                    "
+                    onmouseover="this.style.backgroundColor='#1f6287';"
+                    onmouseout="this.style.backgroundColor='#2980b9';"
+                  >
+                    Confirm
+                  </button>
+                </form>
+              {% else %}
+                <span
+                  style="
+                    color: #2ecc71;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                  "
+                  >Confirmed</span
+                >
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p
+        class="text-center text-muted"
+        style="font-size: 1rem; margin-top: 2rem;"
+      >
+        No appointments found.
+      </p>
+    {% endif %}
+
+    <!-- Link to Analysis Tool -->
+    <div class="text-center mt-4">
+      <a
+        href="{% url 'scans:upload_scan' %}"
+        style="
+          display: inline-block;
+          background-color: #27ae60;
+          color: #fff;
+          font-weight: 500;
+          font-size: 1rem;
+          letter-spacing: 0.5px;
+          padding: 0.6rem 1.2rem;
+          border-radius: 30px;
+          text-decoration: none;
+          transition: background-color 0.3s;
+        "
+        onmouseover="this.style.backgroundColor='#1f8c4e';"
+        onmouseout="this.style.backgroundColor='#27ae60';"
+      >
+        Kidney Model Analysis Tool
+      </a>
+    </div>
+  </div>
+</section>
 {% endblock %}
