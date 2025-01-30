@@ -105,3 +105,15 @@ class Report(models.Model):
 
     def __str__(self):
         return f"Report for Appointment #{self.appointment.id}"
+
+
+
+
+class Review(models.Model):
+    appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(default=0)  # e.g., 1 to 5
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review for Appointment #{self.appointment.id} - Rating: {self.rating}"

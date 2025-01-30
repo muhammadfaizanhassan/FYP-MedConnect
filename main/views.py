@@ -327,58 +327,119 @@ def doctor_confirm_appointment(request, appointment_id):
     # Optional: If you want a confirmation page
     return render(request, 'confirm_appointment.html', {'appointment': appointment})
 
+# views.py
 
-@login_required
-def patient_confirm_appointment(request, appointment_id):
-    appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user)
-    if request.method == 'POST':
-        appointment.is_confirmed = True
-        appointment.status = 'confirmed'
-        appointment.save()
-        messages.success(request, 'Appointment confirmed! Please proceed with payment.')
-        return redirect('payment', appointment_id=appointment.id)
+import stripe
+from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from .models import Appointment
 
-    return render(request, 'confirm_appointment.html', {'appointment': appointment})
+stripe.api_key = settings.STRIPE_SECRET_KEY  # Use your actual Stripe Secret Key
 
 @login_required
 def payment(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user, is_confirmed=True)
 
     if request.method == 'POST':
-        payment_method = request.POST.get('payment_method')
-        if payment_method:
-            payment_success = process_payment(payment_method, appointment)
+        # Grab the amount
+        amount_str = request.POST.get('amount', '')
+        try:
+            amount = float(amount_str)
+            if amount < 0:
+                raise ValueError("Invalid amount")
+        except ValueError:
+            messages.error(request, "Please enter a valid positive amount.")
+            return redirect('payment', appointment_id=appointment_id)
 
-            if payment_success:
-                appointment.payment_status = True
-                appointment.save()
-                messages.success(request, 'Payment successful!')
-                return redirect('payment_success')
-            else:
-                messages.error(request, 'Payment failed. Please try again.')
+        # Convert to cents
+        stripe_amount = int(amount * 100)
 
-    return render(request, 'payment.html', {'appointment': appointment})
+        # Create Stripe Checkout Session (Server-side)
+        try:
+            checkout_session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[{
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': f"Payment for Appointment #{appointment_id}",
+                        },
+                        'unit_amount': stripe_amount,
+                    },
+                    'quantity': 1,
+                }],
+                mode='payment',
+                success_url=request.build_absolute_uri(reverse('payment_success')),
+                cancel_url=request.build_absolute_uri(reverse('payment_failure')),
+            )
+            # Redirect user to Stripe Checkout
+            return redirect(checkout_session.url)
+        except Exception as e:
+            messages.error(request, f"Stripe error: {str(e)}")
+            return redirect('payment', appointment_id=appointment_id)
 
-
-def process_payment(payment_method, appointment):
-    # Simulate payment success (replace with actual API call)
-    if payment_method == 'jazzcash':
-        print(f"Processing JazzCash payment for appointment {appointment.id}")
-    elif payment_method == 'easypaisa':
-        print(f"Processing EasyPaisa payment for appointment {appointment.id}")
-    return True  # Assume payment success for now
+    # GET request => show payment form
+    return render(request, 'payment.html', {
+        'appointment': appointment,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY
+    })
 
 
 @login_required
 def payment_success(request):
-    messages.success(request, 'Your payment was successful!')
-    return redirect('home')
-
+    messages.success(request, "Your payment was successful!")
+    # Optional: You can mark appointment as paid here if you want
+    # But only do that after verifying the Stripe event if you want high integrity
+    return redirect('home')  # or your success page
 
 @login_required
 def payment_failure(request):
-    messages.error(request, 'Your payment failed. Please try again.')
-    return redirect('payment')
+    messages.error(request, "Payment was canceled or failed.")
+    return redirect('home')  # or your retry page
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Appointment, Review
+from .forms import ReviewForm
+
+@login_required
+def add_review(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user)
+
+    # Ensure the appointment is paid before allowing a review
+    if not appointment.payment_status:
+        messages.error(request, "You can only review paid appointments.")
+        return redirect('home')
+
+    # If a review already exists, optionally prevent duplicates:
+    if hasattr(appointment, 'review'):
+        messages.info(request, "You have already submitted a review for this appointment.")
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.appointment = appointment
+            review.save()
+            messages.success(request, "Your review has been submitted successfully!")
+            return redirect('home')
+    else:
+        form = ReviewForm()
+
+    context = {
+        'form': form,
+        'appointment': appointment
+    }
+    return render(request, 'add_review.html', context)
+
+
 
 
 from .models import Contact

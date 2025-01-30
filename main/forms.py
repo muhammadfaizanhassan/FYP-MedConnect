@@ -30,3 +30,17 @@ class AppointmentForm(forms.ModelForm):
             'appointment_date': forms.DateInput(attrs={'type': 'date'}),
             'appointment_time': forms.TimeInput(attrs={'type': 'time'}),
         }
+        
+
+
+
+from django import forms
+from .models import Review
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.NumberInput(attrs={'min': 1, 'max': 5})
+        }

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Payment Success{% endblock %}
+{% block content %}
+<div class="container text-center py-5">
+    <h2 class="text-success">Payment Successful!</h2>
+    <p>Thank you for your payment. Your appointment is confirmed.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Go to Dashboard</a>
+</div>
+{% endblock %}

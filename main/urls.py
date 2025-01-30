@@ -30,13 +30,18 @@ urlpatterns = [
     path('doctor/confirm/<int:appointment_id>/', views.doctor_confirm_appointment, name='doctor_confirm_appointment'),
 
     # Patient confirms the appointment (if your logic requires patient-side confirmation)
-    path('patient/confirm/<int:appointment_id>/', views.patient_confirm_appointment, name='patient_confirm_appointment'),
+    
 
     # Scans feature (upload analysis, etc.)
     path('doctor/dashboard/upload/', include('scans.urls', namespace='scans')),  # ensure scans has app_name in its urls.py
 
     # Payment flow
-    path('payment/<int:appointment_id>/', views.payment, name='payment'),
-    path('payment-success/', views.payment_success, name='payment_success'),
-    path('payment-failure/', views.payment_failure, name='payment_failure'),
+    
+    path("payment/<int:appointment_id>/", views.payment, name="payment"),
+    path("payment-success/", views.payment_success, name="payment_success"),
+    path("payment-failure/", views.payment_failure, name="payment_failure"),
+    
+    
+    #review
+    path("review/<int:appointment_id>/", views.add_review, name="add_review"),
 ]
