@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Payment Success{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center fade-in">
+            <div class="alert alert-success" role="alert">
+                <h2 class="fw-bold">
+                    <i class="fas fa-check-circle"></i> Payment Successful!
+                </h2>
+                <p class="lead">Thank you for your payment. Your appointment is now confirmed.</p>
+                <hr>
+                <p>You can now return to your dashboard to view the updated appointment details.</p>
+                <a href="{% url 'home' %}" class="btn btn-primary mt-3">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Example fade-in animation */
+    .fade-in {
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

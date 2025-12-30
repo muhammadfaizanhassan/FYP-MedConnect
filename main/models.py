@@ -5,7 +5,7 @@ from datetime import timedelta
 from main.fields import EncryptedTextField, EncryptedCharField
 
 class DoctorProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, unique=True)
     specialization = models.CharField(max_length=255)
     office_location = models.CharField(max_length=255)
     phone_number = EncryptedCharField(max_length=15, blank=True, null=True, help_text="Encrypted phone number")
@@ -41,6 +41,12 @@ class PatientProfile(models.Model):
         verbose_name_plural = "Patient Profiles"
 
 
+    class Meta:
+        verbose_name_plural = "Patient Profiles"
+
+
+
+from django.core.exceptions import ValidationError
 
 class Appointment(models.Model):
    
