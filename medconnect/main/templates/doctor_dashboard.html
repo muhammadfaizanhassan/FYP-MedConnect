@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <!-- Dashboard Header -->
+        <h1 class="text-primary fw-bold mb-4 text-center">Doctor Dashboard</h1>
+
+        <!-- Appointments Section -->
+        {% if appointments %}
+            <h2 class="text-secondary fw-bold mb-3">Your Upcoming Appointments</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Patient</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Confirmed</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                        <tr>
+                            <td>{{ appointment.patient.username }}</td>
+                            <td>{{ appointment.appointment_date }}</td>
+                            <td>{{ appointment.appointment_time }}</td>
+                            <td>
+                                {% if appointment.is_confirmed %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not appointment.is_confirmed %}
+                                    <form method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                        <button type="submit" class="btn btn-sm btn-primary">Confirm</button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-success fw-bold">Confirmed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center text-muted">No appointments found.</p>
+        {% endif %}
+
+        <!-- Link to Analysis Tool -->
+        <div class="text-center mt-4">
+            <a href="{% url 'scans:upload_scan' %}" class="btn btn-success btn-lg">
+                Go to Kidney Model Analysis Tool
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

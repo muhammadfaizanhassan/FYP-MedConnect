@@ -1,123 +1,416 @@
 {% extends 'base.html' %}
-
-{% block title %}Analysis Results{% endblock %}
+{% block title %}Scan Results - MedConnect{% endblock %}
 
 {% block content %}
-<div class="results-section">
-    <h2 class="results-title">Kidney Analysis</h2>
+<section class="results-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Results Header -->
+                <div class="results-header text-center mb-5">
+                    <div class="results-icon">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h1 class="results-title">Scan Analysis Results</h1>
+                    <p class="results-subtitle">AI-powered medical image analysis</p>
+                </div>
 
-    <div class="image-container">
-        <p><strong>Uploaded Image:</strong></p>
-        <img src="{{ image_url }}" alt="Uploaded Image" class="uploaded-image">
+                <!-- Image Display -->
+                <div class="image-section card-modern mb-5">
+                    <h3 class="section-title">
+                        <i class="fas fa-image"></i> Uploaded Image
+                    </h3>
+                    <div class="image-container">
+                        <img src="{{ image_url }}" alt="Medical Scan" class="scan-image">
+                    </div>
+                </div>
+
+                <!-- Results Card -->
+                <div class="results-card card-modern">
+                    <div class="card-header-modern mb-4">
+                        <h2 class="card-title">
+                            <i class="fas fa-chart-line"></i> Analysis Results
+                        </h2>
+                        {% if scan_type %}
+                        <div class="scan-type-badge">
+                            <i class="fas fa-tag"></i> {{ scan_type }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Prediction -->
+                    <div class="prediction-section">
+                        <div class="prediction-badge">
+                            {% if results.predicted_class == 0 %}
+                                <div class="badge-icon" style="background: #f59e0b;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                                <div class="badge-content">
+                                    <div class="badge-label">Predicted Condition</div>
+                                    <div class="badge-value">
+                                        {% if scan_type == 'CKD' or not scan_type %}
+                                            Cyst Detected
+                                        {% else %}
+                                            Abnormal Finding
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% elif results.predicted_class == 1 %}
+                                <div class="badge-icon" style="background: #10b981;">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="badge-content">
+                                    <div class="badge-label">Predicted Condition</div>
+                                    <div class="badge-value">Normal</div>
+                                </div>
+                            {% elif results.predicted_class == 2 %}
+                                <div class="badge-icon" style="background: #ef4444;">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                </div>
+                                <div class="badge-content">
+                                    <div class="badge-label">Predicted Condition</div>
+                                    <div class="badge-value">
+                                        {% if scan_type == 'CKD' or not scan_type %}
+                                            Stone Detected
+                                        {% else %}
+                                            Abnormal Finding
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% elif results.predicted_class == 3 %}
+                                <div class="badge-icon" style="background: #8b5cf6;">
+                                    <i class="fas fa-virus"></i>
+                                </div>
+                                <div class="badge-content">
+                                    <div class="badge-label">Predicted Condition</div>
+                                    <div class="badge-value">
+                                        {% if scan_type == 'CKD' or not scan_type %}
+                                            Tumor Detected
+                                        {% else %}
+                                            Abnormal Finding
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="badge-icon" style="background: #6b7280;">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <div class="badge-content">
+                                    <div class="badge-label">Predicted Condition</div>
+                                    <div class="badge-value">Unknown</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Probability Scores -->
+                    <div class="probabilities-section mt-5">
+                        <h3 class="section-title mb-4">
+                            <i class="fas fa-percentage"></i> Prediction Probabilities
+                        </h3>
+                        <div class="probability-bars">
+                            <div class="probability-item">
+                                <div class="probability-label">
+                                    <span>Cyst</span>
+                                    <span class="probability-value">{{ results.predictions.0.0|floatformat:2 }}%</span>
+                                </div>
+                                <div class="probability-bar">
+                                    <div class="probability-fill" style="width: {{ results.predictions.0.0|floatformat:0 }}%; background: #f59e0b;"></div>
+                                </div>
+                            </div>
+                            <div class="probability-item">
+                                <div class="probability-label">
+                                    <span>Normal</span>
+                                    <span class="probability-value">{{ results.predictions.0.1|floatformat:2 }}%</span>
+                                </div>
+                                <div class="probability-bar">
+                                    <div class="probability-fill" style="width: {{ results.predictions.0.1|floatformat:0 }}%; background: #10b981;"></div>
+                                </div>
+                            </div>
+                            <div class="probability-item">
+                                <div class="probability-label">
+                                    <span>Stone</span>
+                                    <span class="probability-value">{{ results.predictions.0.2|floatformat:2 }}%</span>
+                                </div>
+                                <div class="probability-bar">
+                                    <div class="probability-fill" style="width: {{ results.predictions.0.2|floatformat:0 }}%; background: #ef4444;"></div>
+                                </div>
+                            </div>
+                            <div class="probability-item">
+                                <div class="probability-label">
+                                    <span>Tumor</span>
+                                    <span class="probability-value">{{ results.predictions.0.3|floatformat:2 }}%</span>
+                                </div>
+                                <div class="probability-bar">
+                                    <div class="probability-fill" style="width: {{ results.predictions.0.3|floatformat:0 }}%; background: #8b5cf6;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Important Notice -->
+                    <div class="notice-section mt-5">
+                        <div class="notice-card">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="notice-content">
+                                <strong>Important Notice:</strong>
+                                <p>This is an AI-powered preliminary analysis. Please consult with a qualified healthcare professional for a definitive diagnosis and treatment plan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons mt-5">
+                        <a href="{% url 'scans:upload_scan' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-upload"></i> Upload Another Scan
+                        </a>
+                        <a href="{% url 'book_appointment' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-calendar-check"></i> Book Consultation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="results-container">
-        <h3>Prediction</h3>
-        <ul class="results-list">
-            <li><strong>Predicted Class:</strong>
-                {% if results.predicted_class == 0 %}
-                    Cyst
-                {% elif results.predicted_class == 1 %}
-                    Normal
-                {% elif results.predicted_class == 2 %}
-                    Stone
-                {% elif results.predicted_class == 3 %}
-                    Tumor
-                {% else %}
-                    Unknown
-                {% endif %}
-            </li>
-            <li><strong>Raw Prediction Probabilities:</strong> {{ results.predictions }}</li>
-        </ul>
-
-        <a href="{% url 'scans:upload_scan' %}" class="btn-custom">Upload Another Scan</a>
-    </div>
-</div>
-
-<!-- Custom Styles for Results Section -->
 <style>
-    /* Results Section Styling */
-    .results-section {
-        max-width: 700px;
-        margin: 40px auto;
-        padding: 40px;
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+.results-section {
+    background: var(--bg-secondary);
+    min-height: calc(100vh - 200px);
+}
+
+.results-header {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.results-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto var(--spacing-lg);
+    background: var(--primary);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+}
+
+.results-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.results-subtitle {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+}
+
+.image-section {
+    padding: var(--spacing-xl);
+}
+
+.image-container {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+}
+
+.scan-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 4px solid var(--gray-200);
+}
+
+.results-card {
+    padding: var(--spacing-2xl);
+}
+
+.card-header-modern {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--gray-200);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.scan-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--primary);
+    color: white;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.prediction-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.prediction-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    background: var(--gray-50);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--gray-200);
+}
+
+.badge-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.badge-content {
+    flex: 1;
+}
+
+.badge-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.badge-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.probabilities-section {
+    padding-top: var(--spacing-xl);
+    border-top: 2px solid var(--gray-200);
+}
+
+.probability-bars {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.probability-item {
+    width: 100%;
+}
+
+.probability-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.probability-value {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.probability-bar {
+    width: 100%;
+    height: 30px;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+}
+
+.probability-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 1s ease-in-out;
+    box-shadow: var(--shadow-md);
+}
+
+.notice-section {
+    margin-top: var(--spacing-xl);
+}
+
+.notice-card {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: #dbeafe;
+    border-left: 4px solid var(--info);
+    border-radius: var(--radius-lg);
+}
+
+.notice-card i {
+    font-size: 1.5rem;
+    color: var(--info);
+    flex-shrink: 0;
+}
+
+.notice-content {
+    flex: 1;
+}
+
+.notice-content strong {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+}
+
+.notice-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.action-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-top: var(--spacing-xl);
+    border-top: 2px solid var(--gray-200);
+}
+
+@media (max-width: 768px) {
+    .results-title {
+        font-size: 2rem;
+    }
+    
+    .prediction-badge {
+        flex-direction: column;
         text-align: center;
     }
-
-    .results-title {
-        font-size: 28px;
-        font-weight: bold;
-        color: #34495E;
-        margin-bottom: 30px;
+    
+    .action-buttons {
+        flex-direction: column;
     }
-
-    /* Image Styling */
-    .image-container {
-        margin-bottom: 30px;
+    
+    .action-buttons .btn {
+        width: 100%;
     }
-
-    .uploaded-image {
-        max-width: 100%;
-        height: auto;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Results List Styling */
-    .results-container {
-        text-align: left;
-        padding: 20px;
-        background-color: #f4f6f8;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .results-list {
-        list-style: none;
-        padding: 0;
-    }
-
-    .results-list li {
-        font-size: 18px;
-        color: #34495E;
-        margin-bottom: 10px;
-    }
-
-    .results-list li strong {
-        color: #2C3E50;
-    }
-
-    /* Custom Button Styling */
-    .btn-custom {
-        background-color: #3498DB;
-        color: white;
-        padding: 12px 30px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        margin-top: 20px;
-        display: inline-block;
-        transition: background-color 0.3s ease;
-        text-decoration: none;
-    }
-
-    .btn-custom:hover {
-        background-color: #2980B9;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .results-section {
-            padding: 20px;
-        }
-
-        .results-title {
-            font-size: 24px;
-        }
-    }
+}
 </style>
 {% endblock %}

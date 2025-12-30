@@ -1,0 +1,124 @@
+{% extends 'base.html' %} {% block title %}About Us - MedConnect{% endblock %}
+{% block content %}
+<!-- Chatbot Section -->
+<section
+  class="chatbot-section"
+  style="padding: 40px 20px; background-color: #f8f9fa"
+>
+  <div class="container">
+    <!-- Header Section -->
+    <header style="text-align: center; margin-bottom: 30px">
+      <h1 style="color: #2c3e50">Chat with Our AI-Powered Medical Assistant</h1>
+      <p style="color: #7f8c8d; max-width: 600px; margin: 0 auto">
+        Ask health-related questions, check symptoms, and get treatment
+        suggestions from our AI assistant.
+      </p>
+    </header>
+
+    <!-- Chatbot Form -->
+    <div class="form-container" style="max-width: 600px; margin: 0 auto">
+      <form id="chatbot-form" method="POST">
+        <!-- CSRF Token (Django Integration) -->
+        {% csrf_token %}
+
+        <!-- Input Field -->
+        <label
+          for="query"
+          style="
+            display: block;
+            font-size: 18px;
+            color: #34495e;
+            margin-bottom: 8px;
+          "
+        >
+          Enter your medical query:
+        </label>
+        <input
+          id="query"
+          name="query"
+          type="text"
+          placeholder="Type your question here..."
+          style="
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            margin-bottom: 20px;
+          "
+          required
+        />
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          style="
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+          "
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+
+    <!-- Chatbot Response Section -->
+    <div id="response-container" style="margin-top: 30px; display: none">
+      <div
+        class="response-card"
+        style="
+          padding: 20px;
+          background-color: white;
+          border-radius: 6px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <h2 style="color: #34495e">Chatbot Response</h2>
+        <p id="chatbot-response" style="color: #7f8c8d"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JavaScript Section -->
+<script>
+  // Handle form submission with AJAX
+  document
+    .getElementById("chatbot-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent page reload
+
+      // Get user input
+      const query = document.getElementById("query").value;
+      const responseContainer = document.getElementById("response-container");
+      const responseText = document.getElementById("chatbot-response");
+
+      // Show loading indicator
+      responseContainer.style.display = "block";
+      responseText.textContent = "Thinking...";
+
+      // AJAX POST request to server
+      fetch("{% url 'chatbot' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: new URLSearchParams({ query: query }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Update response text
+          responseText.textContent = data.response;
+        })
+        .catch((error) => {
+          // Handle errors
+          responseText.textContent = "An error occurred. Please try again.";
+        });
+    });
+</script>
+{% endblock %}

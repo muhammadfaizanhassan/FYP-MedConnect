@@ -1,115 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}Django Image Upload{% endblock %}</title>
+
+    <!-- Google Font (Poppins or any modern font) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Base Styles -->
     <style>
-        /* General Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+      /* Reset & Basic Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Poppins', Arial, sans-serif;
+        background: #eee;
+        color: #333;
+        line-height: 1.6;
+      }
 
-        header {
-            background-color: #2C3E50;
-            color: white;
-            padding: 10px 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+      /* Header (Navbar) */
+      header {
+        position: relative;
+        background-color: #2C3E50;
+        color: #fff;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+      nav ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      nav ul li {
+        display: inline-block;
+        margin: 0 15px;
+        position: relative;
+      }
+      nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 5px 15px;
+        transition: background-color 0.3s ease, border-radius 0.3s;
+      }
+      nav ul li a:hover {
+        background-color: #1ABC9C;
+        border-radius: 4px;
+      }
 
-        nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
+      /* Parallax / Decorative Overlay (Header) */
+      header::before {
+        content: "";
+        position: absolute;
+        bottom: -40px;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: #2980b9;
+        clip-path: polygon(0 0, 100% 100%, 0% 100%);
+        z-index: -1;
+      }
 
+      /* Main Content Wrapper */
+      main {
+        max-width: 1200px;
+        margin: 60px auto 20px auto;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.8s ease;
+      }
+
+      /* Fade In Animation */
+      @keyframes fadeIn {
+        0% {opacity: 0; transform: translateY(20px);}
+        100% {opacity: 1; transform: translateY(0);}
+      }
+
+      /* Decorative Bubbles or Shapes in Main (Optional) */
+      main::before,
+      main::after {
+        content: "";
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: #2980b9;
+        opacity: 0.2;
+        border-radius: 50%;
+        z-index: -1;
+        animation: float 6s ease-in-out infinite alternate;
+      }
+      main::before {
+        top: -40px;
+        left: -40px;
+      }
+      main::after {
+        bottom: -40px;
+        right: -40px;
+        background: #34495e;
+      }
+      @keyframes float {
+        0% {transform: translateY(0);}
+        100% {transform: translateY(40px);}
+      }
+
+      /* Footer Styles */
+      footer {
+        background-color: #34495E;
+        color: #ecf0f1;
+        text-align: center;
+        padding: 20px;
+        margin-top: 40px;
+        position: relative;
+      }
+      footer p {
+        margin: 0;
+        font-size: 14px;
+      }
+      footer::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: #2980b9;
+        clip-path: polygon(0% 100%, 100% 0, 100% 100%);
+        z-index: -1;
+      }
+
+      /* Button & Link Styles */
+      button,
+      a.button {
+        background-color: #3498DB;
+        color: #FFFFFF;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.3s;
+        text-decoration: none;
+        display: inline-block;
+      }
+      button:hover,
+      a.button:hover {
+        background-color: #2980B9;
+        transform: translateY(-2px);
+      }
+
+      /* Responsive Navigation */
+      @media (max-width: 768px) {
         nav ul li {
-            display: inline;
-            margin: 0 15px;
+          display: block;
+          margin: 10px 0;
         }
-
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            padding: 5px 15px;
-            transition: background-color 0.3s ease;
-        }
-
-        nav ul li a:hover {
-            background-color: #1ABC9C;
-            border-radius: 4px;
-        }
-
-        /* Main Content Styles */
         main {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          margin: 40px 10px;
         }
-
-        h1, h2 {
-            color: #34495E;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 16px;
-            color: #666;
-        }
-
-        /* Footer Styles */
-        footer {
-            background-color: #34495E;
-            color: #ecf0f1;
-            text-align: center;
-            padding: 20px;
-            margin-top: 50px;
-        }
-
-        footer p {
-            margin: 0;
-            font-size: 14px;
-        }
-
-        /* Button Styles */
-        button, a.button {
-            background-color: #3498DB;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-        }
-
-        button:hover, a.button:hover {
-            background-color: #2980B9;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            nav ul li {
-                display: block;
-                margin: 10px 0;
-            }
-
-            main {
-                padding: 15px;
-            }
-        }
+      }
     </style>
 </head>
 <body>

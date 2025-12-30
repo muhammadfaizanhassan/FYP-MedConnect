@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - MedConnect{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center py-5 bg-light" style="background: linear-gradient(90deg, #2980b9, #34495e);">
+    <div class="container text-dark">
+        <h1 class="display-3 fw-bold mb-4">Welcome to MedConnect</h1>
+        <p class="lead mx-auto" style="max-width: 700px;">
+            Bridging the gap between healthcare professionals and patients through seamless appointment booking, health management tools, and access to world-class medical advice.
+        </p>
+        <div class="mt-4">
+            <a href="{% url 'register_patient' %}" class="btn btn-primary btn-lg px-4 me-3">Get Started</a>
+            <a href="{% url 'register_doctor' %}" class="btn btn-outline-dark btn-lg px-4">Join as a Doctor</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 bg-white">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-4">
+                <div class="feature-card p-4 border rounded shadow-sm">
+                    {% load static %}
+                    <img 
+                        src="{% static 'main/images/1.jpg' %}" 
+                        alt="Doctor Icon" 
+                        class="img-fluid mb-3" 
+                        style="max-height: 150px; object-fit: contain;"
+                    >
+                    <h3 class="text-dark fw-bold">Connect with Doctors</h3>
+                    <p class="text-muted">Access a network of qualified medical professionals and book consultations with ease.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4 border rounded shadow-sm">
+                    {% load static %}
+                    <img 
+                        src="{% static 'main/images/2.jpg' %}" 
+                        alt="Appointment Icon" 
+                        class="img-fluid mb-3" 
+                        style="max-height: 150px; object-fit: contain;"
+                    >
+                    <h3 class="text-dark fw-bold">Schedule Appointments</h3>
+                    <p class="text-muted">Use our intuitive tools to manage your calendar and receive timely reminders.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4 border rounded shadow-sm">
+                    {% load static %}
+                    <img 
+                        src="{% static 'main/images/3.jpg' %}" 
+                        alt="Health Management Icon" 
+                        class="img-fluid mb-3" 
+                        style="max-height: 150px; object-fit: contain;"
+                    >
+                    <h3 class="text-dark fw-bold">Manage Your Health</h3>
+                    <p class="text-muted">Track your health records, monitor progress, and get personalized care recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Why Choose Us Section -->
+<section class="why-choose-section py-5 bg-light" style="background: linear-gradient(90deg, #2980b9, #34495e);">
+    <div class="container text-center">
+        <h2 class="fw-bold text-primary mb-4">Why Choose MedConnect?</h2>
+        <p class="lead text-muted mx-auto" style="max-width: 800px;">
+            MedConnect offers a comprehensive healthcare platform designed for simplicity, security, and effectiveness. Stay connected with your doctor, maintain your health records, and access expert advice effortlessly.
+        </p>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center fw-bold text-primary mb-5">What Our Users Say</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card p-4 shadow-sm border-0">
+                    <p class="text-muted">"MedConnect made it easy for me to find a specialist and book an appointment. The experience was seamless!"</p>
+                    <h6 class="text-dark fw-semibold">- John Doe</h6>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card p-4 shadow-sm border-0">
+                    <p class="text-muted">"I can manage my health on the go. The platform is intuitive and keeps me connected."</p>
+                    <h6 class="text-dark fw-semibold">- Jane Smith</h6>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimonial-card p-4 shadow-sm border-0">
+                    <p class="text-muted">"Tracking my health and getting reminders has significantly improved my well-being."</p>
+                    <h6 class="text-dark fw-semibold">- Sarah Lee</h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="call-to-action-section text-center py-5 bg-primary text-white" style="background: linear-gradient(90deg, #2980b9, #34495e);">
+    <div class="container">
+        <h2 class="fw-bold mb-4">Start Your Health Journey Today</h2>
+        <div>
+            <a href="{% url 'register_patient' %}" class="btn btn-success btn-lg px-4 me-3">Register as a Patient</a>
+            <a href="{% url 'register_doctor' %}" class="btn btn-outline-light btn-lg px-4">Join as a Doctor</a>
+        </div>
+    </div>
+</section>
+<br>
+<br>
+<!-- Footer -->
+<footer
+  class="footer mt-auto py-4"
+  style="background: linear-gradient(to right, #1f4037, #99f2c8); color: #fff;"
+>
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <!-- About Section -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">About MedConnect</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          MedConnect is your trusted partner in healthcare, providing
+          top-notch medical services and solutions for your well-being. Stay
+          connected with us for the latest updates and resources.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Quick Links</h5>
+        <ul style="list-style: none; padding: 0;">
+          <li>
+            <a
+              href="{% url 'home' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'about' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >About Us</a
+            >
+          </li>
+         
+          <li>
+            <a
+              href="{% url 'contact' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Contact Us</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          <i class="fas fa-map-marker-alt"></i> 123 Health St., Wellness City,
+          CA<br />
+          <i class="fas fa-phone-alt"></i> +1 (555) 123-4567<br />
+          <i class="fas fa-envelope"></i>
+          <a
+            href="mailto:support@medconnect.com"
+            class="text-white text-decoration-none"
+            >support@medconnect.com</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div
+      class="text-center mt-4"
+      style="border-top: 1px solid rgba(255, 255, 255, 0.3); padding-top: 10px;"
+    >
+      <p style="font-size: 14px; margin: 0;">
+        &copy; 2024 MedConnect. All Rights Reserved.
+      </p>
+      <p style="font-size: 14px; margin: 0;">
+        <a
+          href="{% url 'privacy' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Privacy Policy</a
+        >
+        |
+        <a
+          href="{% url 'terms' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Terms of Service</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Optional FontAwesome Icons for Contact -->
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends 'base.html' %} {% block title %}Chatbot - MedConnect{% endblock %}
+{% block content %}
+    <title>Chat Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #4CAF50;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .response-container, .error-message {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .response-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .response-container p {
+            margin: 0;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .conversations {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .conversations h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .conversations ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .conversations li {
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .conversations li:last-child {
+            border-bottom: none;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #4CAF50;
+            border-radius: 5px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .pagination a:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination span {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Interface</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="prompt" placeholder="Enter your question...">
+        <input type="submit" value="Send">
+    </form>
+    <br>
+    {% if error_message %}
+    <div class="error-message">{{ error_message }}</div>
+    {% endif %}
+
+    {% if response %}
+    <div class="response-container">
+        <h2>Response:</h2>
+        <p>{{ response }}</p>
+    </div>
+    {% endif %}
+
+    <div class="conversations">
+        <h2>Recent Conversations</h2>
+        <ul>
+            {% for conversation in page_obj %}
+            <li>
+                <strong>Prompt:</strong> {{ conversation.prompt|escape }}<br>
+                <strong>Response:</strong> {{ conversation.response|escape }}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}

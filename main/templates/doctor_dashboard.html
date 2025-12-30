@@ -1,48 +1,362 @@
 {% extends 'base.html' %}
-
-{% block title %}Doctor Dashboard{% endblock %}
+{% block title %}Doctor Dashboard - MedConnect{% endblock %}
 
 {% block content %}
-<h1>Doctor Dashboard</h1>
+<div class="dashboard-container">
+    <div class="container py-5">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header mb-5">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="dashboard-title">
+                        <i class="fas fa-user-md"></i> Doctor Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle">Welcome, Dr. {{ doctor_profile.user.username }}! Manage your appointments and patients.</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="{% url 'scans:upload_scan' %}" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-microscope"></i> Scan Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
 
-{% if appointments %}
-    <h2>Your Upcoming Appointments</h2>
-    <table style="width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 18px; text-align: left;">
-        <thead>
-            <tr style="background-color: #009879; color: white; text-align: left; font-weight: bold;">
-                <th style="padding: 12px 15px;">Patient</th>
-                <th style="padding: 12px 15px;">Date</th>
-                <th style="padding: 12px 15px;">Time</th>
-                <th style="padding: 12px 15px;">Confirmed</th>
-                <th style="padding: 12px 15px;">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for appointment in appointments %}
-            <tr style="border-bottom: 1px solid #dddddd;">
-                <td style="padding: 12px 15px;">{{ appointment.patient.username }}</td>
-                <td style="padding: 12px 15px;">{{ appointment.appointment_date }}</td>
-                <td style="padding: 12px 15px;">{{ appointment.appointment_time }}</td>
-                <td style="padding: 12px 15px;">{{ appointment.is_confirmed|yesno:"Yes,No" }}</td>
-                <td style="padding: 12px 15px;">
-                    {% if not appointment.is_confirmed %}
-                        <form method="post" style="display: inline; margin: 0;">
-                            {% csrf_token %}
-                            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
-                            <button type="submit" style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">Confirm Appointment</button>
-                        </form>
-                    {% else %}
-                        <p style="color: #4CAF50; font-weight: bold;">Confirmed</p>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>No appointments found.</p>
-{% endif %}
-<a href="{% url 'scans:upload_scan' %}" style="display: inline-block; margin-top: 20px; background-color: #009879; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-    Go to Kidney Model Analysis Tool
-</a>
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="stat-card card-modern">
+                    <div class="stat-icon" style="background: #667eea;">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ pending_appointments }}</div>
+                        <div class="stat-label">Pending Appointments</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card card-modern">
+                    <div class="stat-icon" style="background: #f093fb;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ confirmed_appointments }}</div>
+                        <div class="stat-label">Confirmed Appointments</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card card-modern">
+                    <div class="stat-icon" style="background: #4facfe;">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ appointments|length }}</div>
+                        <div class="stat-label">Total Appointments</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="dashboard-section">
+            <div class="section-header mb-4">
+                <h2 class="section-title">
+                    <i class="fas fa-calendar-alt"></i> Your Appointments
+                </h2>
+            </div>
+
+            {% if appointments %}
+                <div class="appointments-list">
+                    {% for appointment in appointments %}
+                    <div class="appointment-card card-modern">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="appointment-date">
+                                    <div class="date-day">{{ appointment.appointment_date|date:"d" }}</div>
+                                    <div class="date-month">{{ appointment.appointment_date|date:"M" }}</div>
+                                    <div class="date-year">{{ appointment.appointment_date|date:"Y" }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="appointment-info">
+                                    <h3 class="patient-name">
+                                        <i class="fas fa-user"></i> {{ appointment.patient.username }}
+                                    </h3>
+                                    <p class="appointment-time">
+                                        <i class="fas fa-clock"></i> {{ appointment.appointment_time|time:"g:i A" }}
+                                    </p>
+                                    
+                                    {% if appointment.medical_history %}
+                                    <div class="medical-history mt-3">
+                                        <strong><i class="fas fa-file-medical"></i> Medical History:</strong>
+                                        <p class="history-text">{{ appointment.medical_history|truncatewords:30 }}</p>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if appointment.reports.all %}
+                                    <div class="reports-section mt-3">
+                                        <strong><i class="fas fa-file-pdf"></i> Reports:</strong>
+                                        <div class="reports-list">
+                                            {% for report in appointment.reports.all %}
+                                            <a href="{{ report.file.url }}" target="_blank" class="report-link">
+                                                <i class="fas fa-download"></i> {{ report.file.name|truncatewords:2 }}
+                                            </a>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="appointment-status">
+                                    {% if appointment.status == 'confirmed' %}
+                                        <span class="badge badge-success">
+                                            <i class="fas fa-check-circle"></i> Confirmed
+                                        </span>
+                                    {% elif appointment.status == 'pending' %}
+                                        <span class="badge badge-warning">
+                                            <i class="fas fa-hourglass-half"></i> Pending
+                                        </span>
+                                    {% elif appointment.status == 'completed' %}
+                                        <span class="badge badge-info">
+                                            <i class="fas fa-check-double"></i> Completed
+                                        </span>
+                                    {% else %}
+                                        <span class="badge badge-danger">
+                                            <i class="fas fa-times-circle"></i> Cancelled
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="appointment-actions">
+                                    {% if not appointment.is_confirmed %}
+                                        <form method="post" action="{% url 'doctor_confirm_appointment' appointment.id %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-check"></i> Confirm
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-success">
+                                            <i class="fas fa-check-double"></i> Confirmed
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state card-modern text-center py-5">
+                    <i class="fas fa-calendar-times" style="font-size: 4rem; color: var(--gray-400); margin-bottom: var(--spacing-lg);"></i>
+                    <h3>No Appointments Yet</h3>
+                    <p class="text-muted">You don't have any appointments scheduled at the moment.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    background: var(--bg-secondary);
+    min-height: calc(100vh - 200px);
+}
+
+.dashboard-header {
+    background: var(--primary);
+    color: white;
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--spacing-2xl);
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.dashboard-subtitle {
+    font-size: 1.125rem;
+    opacity: 0.9;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-xl);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.appointments-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.appointment-card {
+    padding: var(--spacing-xl);
+    transition: all var(--transition-base);
+}
+
+.appointment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+.appointment-date {
+    text-align: center;
+    background: var(--primary);
+    color: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-xl);
+    min-width: 100px;
+}
+
+.date-day {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.date-month {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: var(--spacing-xs);
+}
+
+.date-year {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin-top: var(--spacing-xs);
+}
+
+.patient-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.appointment-time {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.appointment-time i {
+    color: var(--primary);
+    width: 20px;
+}
+
+.medical-history,
+.reports-section {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--gray-200);
+}
+
+.history-text {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-top: var(--spacing-xs);
+}
+
+.reports-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-xs);
+}
+
+.report-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.report-link:hover {
+    color: var(--primary-dark);
+    transform: translateX(4px);
+}
+
+.appointment-status {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.empty-state {
+    padding: var(--spacing-3xl) !important;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 2rem;
+    }
+    
+    .appointment-card .row > div {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .appointment-date {
+        margin: 0 auto;
+        max-width: 120px;
+    }
+}
+</style>
 {% endblock %}

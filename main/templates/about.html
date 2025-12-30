@@ -1,59 +1,643 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}About Us - MedConnect{% endblock %}
 
 {% block content %}
-<div style="text-align: center; padding: 50px 20px; background-color: #F0F4F8; border-radius: 10px; margin-bottom: 40px;">
-    <h1 style="font-size: 36px; color: #2C3E50; margin-bottom: 20px;">About MedConnect</h1>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto;">MedConnect is a platform designed to bring patients and medical professionals together, creating a seamless healthcare experience. We aim to revolutionize the way healthcare is accessed and managed by providing a comprehensive digital platform that allows patients to connect with top-tier doctors, book appointments with ease, and manage their health effectively.</p>
-</div>
-
-<!-- Our Mission Section -->
-<div style="text-align: center; margin: 50px 0;">
-    <h2 style="font-size: 32px; color: #2C3E50; margin-bottom: 20px;">Our Mission</h2>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 900px; margin: 0 auto; margin-bottom: 40px;">
-        At MedConnect, our mission is to empower individuals to take control of their health by making healthcare more accessible, efficient, and patient-centered. We believe in a future where everyone has access to the best medical care, regardless of their location or circumstances. By leveraging technology, we are closing the gap between patients and healthcare providers, ensuring that quality medical advice is just a click away.
-    </p>
-</div>
-
-<!-- Why MedConnect Section -->
-<div style="background-color: #FFFFFF; padding: 40px 20px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
-    <h2 style="font-size: 28px; color: #2C3E50; text-align: center; margin-bottom: 30px;">Why Choose MedConnect?</h2>
-    <div style="display: flex; justify-content: space-around;">
-        <div style="width: 30%; text-align: center;">
-            <img src="static/images/doctor_network.svg" alt="Doctor Network" style="width: 100px; margin-bottom: 20px;">
-            <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Extensive Doctor Network</h3>
-            <p style="font-size: 16px; color: #7F8C8D;">With over 500 verified medical professionals across various specialties, we ensure that patients have access to the best healthcare providers, wherever they are.</p>
-        </div>
-        <div style="width: 30%; text-align: center;">
-            <img src="static/images/secure_data.svg" alt="Secure Data" style="width: 100px; margin-bottom: 20px;">
-            <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">Secure Health Data</h3>
-            <p style="font-size: 16px; color: #7F8C8D;">Your medical records and data are securely stored, with state-of-the-art encryption methods ensuring your privacy and confidentiality at all times.</p>
-        </div>
-        <div style="width: 30%; text-align: center;">
-            <img src="static/images/24_7_support.svg" alt="24/7 Support" style="width: 100px; margin-bottom: 20px;">
-            <h3 style="font-size: 24px; color: #34495E; margin-bottom: 10px;">24/7 Access to Care</h3>
-            <p style="font-size: 16px; color: #7F8C8D;">Our platform allows you to book appointments, access health records, and communicate with healthcare providers anytime, from any location.</p>
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="about-hero-overlay"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <div class="about-hero-content">
+                    <div class="about-badge">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>About MedConnect</span>
+                    </div>
+                    <h1 class="about-hero-title">Revolutionizing Healthcare Through AI-Driven Efficiency</h1>
+                    <p class="about-hero-description">
+                        MedConnect is an AI-powered digital healthcare platform that streamlines appointment scheduling, 
+                        centralizes patient records, and enhances doctor-patient communication. We integrate Machine Learning 
+                        models to assist doctors in early diagnosis, achieving 99.73% accuracy in kidney disease detection.
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Vision Section -->
-<div style="text-align: center; margin: 50px 0;">
-    <h2 style="font-size: 32px; color: #2C3E50; margin-bottom: 20px;">Our Vision</h2>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 900px; margin: 0 auto; margin-bottom: 40px;">
-        We envision a future where healthcare is not a privilege but a basic right for all. By harnessing the power of technology, we aim to create a world where everyone, regardless of their background, has easy access to the best medical advice, treatments, and services. Our goal is to make healthcare more efficient, effective, and personalized to meet the unique needs of each individual.
-    </p>
-</div>
+<!-- Mission & Vision Section -->
+<section class="mission-vision-section py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h2 class="mission-title">Our Mission</h2>
+                    <p class="mission-text">
+                        To reduce healthcare inefficiencies and improve patient care by streamlining medical interactions 
+                        with AI and advanced detection models. We empower healthcare providers with cutting-edge technology 
+                        to deliver faster, more accurate diagnoses and better patient outcomes.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="vision-card">
+                    <div class="vision-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h2 class="vision-title">Our Vision</h2>
+                    <p class="vision-text">
+                        We envision a future where healthcare is accessible, efficient, and personalized for everyone. 
+                        By harnessing AI and ML technologies, we aim to create a world where early disease detection is 
+                        the norm, wait times are minimized, and patient care is optimized through intelligent systems.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<!-- Call to Action Section -->
-<div style="text-align: center; margin-top: 50px;">
-    <h2 style="font-size: 28px; color: #2C3E50; margin-bottom: 20px;">Join MedConnect Today</h2>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto 30px;">
-        Whether you are a patient seeking the best care or a medical professional looking to expand your reach, MedConnect is here to support you. Start your health journey with us and experience the future of healthcare.
-    </p>
-    <a href="{% url 'register_patient' %}" style="background-color: #2ECC71; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; cursor: pointer; transition: background-color 0.3s ease;">Register as a Patient</a>
-    <a href="{% url 'register_doctor' %}" style="background-color: #3498DB; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; margin-left: 20px; cursor: pointer; transition: background-color 0.3s ease;">Join as a Doctor</a>
-</div>
+<!-- Values Section -->
+<section class="values-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Our Core Values</h2>
+            <p class="section-subtitle">The principles that guide everything we do</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Security & Privacy</h3>
+                    <p>We prioritize the security and confidentiality of all patient data with bank-level encryption and compliance standards.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Innovation</h3>
+                    <p>We continuously innovate with AI and ML technologies to improve diagnostic accuracy and healthcare delivery.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Patient-Centered</h3>
+                    <p>Every feature we build is designed with patients and healthcare providers in mind, ensuring ease of use and effectiveness.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Transparency</h3>
+                    <p>We believe in transparent communication and clear processes, building trust with all our stakeholders.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Accessibility</h3>
+                    <p>We strive to make quality healthcare accessible to everyone, regardless of location or background.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>Excellence</h3>
+                    <p>We maintain the highest standards in everything we do, from AI model accuracy to user experience.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- Why Choose Us Section -->
+<section class="why-choose-section py-5">
+    <div class="container">
+        <div class="section-header text-center mb-5">
+            <h2 class="section-title">Why Choose MedConnect?</h2>
+            <p class="section-subtitle">Experience the future of healthcare technology</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card-about">
+                    <div class="feature-icon-about">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Extensive Doctor Network</h3>
+                    <p>Access to over 500 verified medical professionals across various specialties, ensuring you find the right care.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card-about">
+                    <div class="feature-icon-about">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI-Powered Diagnostics</h3>
+                    <p>99.73% accuracy in kidney disease detection with our advanced ML models, supporting doctors in early diagnosis.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card-about">
+                    <div class="feature-icon-about">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Secure Health Data</h3>
+                    <p>Your medical records are protected with state-of-the-art encryption, ensuring privacy and confidentiality.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card-about">
+                    <div class="feature-icon-about">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Reduced Wait Times</h3>
+                    <p>AI-driven scheduling reduces appointment wait times by up to 40%, getting you care when you need it.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card-about">
+                    <div class="feature-icon-about">
+                        <i class="fas fa-file-medical-alt"></i>
+                    </div>
+                    <h3>Centralized Records</h3>
+                    <p>All your medical history in one place, accessible anytime, anywhere, for seamless care coordination.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card-about">
+                    <div class="feature-icon-about">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3>24/7 AI Support</h3>
+                    <p>Get instant answers to health questions with our AI assistant, available round the clock for your convenience.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-icon-box">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-text">Patients Served</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-icon-box">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="stat-number">500+</div>
+                    <div class="stat-text">Expert Doctors</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-icon-box">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-number">99.73%</div>
+                    <div class="stat-text">AI Accuracy</div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="stat-box">
+                    <div class="stat-icon-box">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-number">40%</div>
+                    <div class="stat-text">Reduced Wait Times</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="about-cta-section py-5">
+    <div class="container">
+        <div class="about-cta-card">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="about-cta-title">Ready to Transform Your Healthcare Experience?</h2>
+                    <p class="about-cta-description">
+                        Join thousands of patients and doctors who trust MedConnect for AI-powered healthcare solutions. 
+                        Experience the future of medical care today.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <div class="about-cta-buttons">
+                        <a href="{% url 'register_patient' %}" class="btn-about-cta btn-about-primary">
+                            <i class="fas fa-user-plus"></i> Register as Patient
+                        </a>
+                        <a href="{% url 'register_doctor' %}" class="btn-about-cta btn-about-secondary">
+                            <i class="fas fa-user-md"></i> Join as Doctor
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+/* About Hero Section */
+.about-hero {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    background: #1e3a8a;
+    padding: 120px 0 80px;
+    overflow: hidden;
+}
+
+.about-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        rgba(255, 255, 255, 0.05);
+}
+
+.about-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.about-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.about-hero-title {
+    font-size: 3rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.about-hero-description {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.8;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Mission & Vision Section */
+.mission-vision-section {
+    background: #f9fafb;
+    padding: 5rem 0;
+}
+
+.mission-card,
+.vision-card {
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    height: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.mission-card:hover,
+.vision-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.mission-icon,
+.vision-icon {
+    width: 80px;
+    height: 80px;
+    background: #2563eb;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.mission-title,
+.vision-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.mission-text,
+.vision-text {
+    font-size: 1.125rem;
+    color: #6b7280;
+    line-height: 1.8;
+}
+
+/* Values Section */
+.values-section {
+    background: white;
+    padding: 5rem 0;
+}
+
+.section-header {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+}
+
+.value-card {
+    background: #f9fafb;
+    border-radius: 16px;
+    padding: 2rem;
+    height: 100%;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.value-card:hover {
+    border-color: #2563eb;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.value-icon {
+    width: 70px;
+    height: 70px;
+    background: #2563eb;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    margin: 0 auto 1.5rem;
+}
+
+.value-card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.value-card p {
+    color: #6b7280;
+    line-height: 1.7;
+}
+
+/* Why Choose Section */
+.why-choose-section {
+    background: #f9fafb;
+    padding: 5rem 0;
+}
+
+.feature-card-about {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    height: 100%;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e7eb;
+}
+
+.feature-card-about:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon-about {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 1.5rem;
+    background: #2563eb;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+}
+
+.feature-card-about h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.feature-card-about p {
+    color: #6b7280;
+    line-height: 1.7;
+}
+
+/* Stats Section */
+.stats-section {
+    background: #1e3a8a;
+    padding: 5rem 0;
+    color: white;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 2rem;
+}
+
+.stat-icon-box {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fbbf24;
+    font-size: 2.5rem;
+    margin: 0 auto 1.5rem;
+}
+
+.stat-number {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.stat-text {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* CTA Section */
+.about-cta-section {
+    background: #f9fafb;
+    padding: 5rem 0;
+}
+
+.about-cta-card {
+    background: #2563eb;
+    border-radius: 24px;
+    padding: 3rem;
+    color: white;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.about-cta-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.about-cta-description {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.7;
+}
+
+.about-cta-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-about-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-about-primary {
+    background: white;
+    color: #1e3a8a;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-about-primary:hover {
+    background: #f3f4f6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    color: #1e3a8a;
+}
+
+.btn-about-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-about-secondary:hover {
+    background: white;
+    color: #1e3a8a;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .about-hero-title {
+        font-size: 2rem;
+    }
+    
+    .about-hero-description {
+        font-size: 1.125rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .about-cta-title {
+        font-size: 2rem;
+    }
+    
+    .about-cta-buttons {
+        margin-top: 1.5rem;
+    }
+    
+    .btn-about-cta {
+        width: 100%;
+    }
+}
+</style>
 {% endblock %}

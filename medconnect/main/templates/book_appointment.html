@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Book an Appointment - MedConnect{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="text-center mb-5">
+            <h1 class="text-primary fw-bold">Book an Appointment</h1>
+            <p class="lead text-secondary">
+                Find the right doctor by searching for their name or specialization, and schedule an appointment at your convenience.
+            </p>
+        </div>
+
+        <!-- Search Form -->
+        <form method="get" class="d-flex align-items-center justify-content-center mb-4">
+            <input type="text" name="search" placeholder="Search for a doctor..." value="{{ search_query }}"
+                class="form-control me-2" style="max-width: 500px; font-size: 16px;">
+            <button type="submit" class="btn btn-primary px-4">Search</button>
+        </form>
+
+        <!-- Appointment Form -->
+        <form method="post" class="bg-light p-4 rounded shadow-sm mx-auto" style="max-width: 600px;">
+            {% csrf_token %}
+
+            <!-- Doctor Selection -->
+            <div class="mb-3">
+                <label for="doctor" class="form-label fw-bold">Select Doctor:</label>
+                <select id="doctor" name="doctor" class="form-select" required>
+                    <option value="" disabled selected>Select a doctor</option>
+                    {% for doctor in doctors %}
+                        <option value="{{ doctor.id }}">{{ doctor.user.username }} ({{ doctor.specialization }}) - Location: {{ doctor.office_location }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Appointment Date -->
+            <div class="mb-3">
+                <label for="date" class="form-label fw-bold">Select Date:</label>
+                <input type="date" id="date" name="date" class="form-control" required>
+            </div>
+
+            <!-- Appointment Time -->
+            <div class="mb-3">
+                <label for="time" class="form-label fw-bold">Select Time:</label>
+                <input type="time" id="time" name="time" class="form-control" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-success btn-lg px-5">Book Appointment</button>
+            </div>
+        </form>
+
+        <!-- No Doctors Found -->
+        {% if not doctors %}
+            <p class="text-danger text-center mt-4">No doctors found matching your search criteria.</p>
+        {% endif %}
+    </div>
+</section>
+<!-- Footer -->
+<footer
+  class="footer mt-auto py-4"
+  style="background: linear-gradient(to right, #1f4037, #99f2c8); color: #fff;"
+>
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <!-- About Section -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">About MedConnect</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          MedConnect is your trusted partner in healthcare, providing
+          top-notch medical services and solutions for your well-being. Stay
+          connected with us for the latest updates and resources.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Quick Links</h5>
+        <ul style="list-style: none; padding: 0;">
+          <li>
+            <a
+              href="{% url 'home' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'about' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >About Us</a
+            >
+          </li>
+         
+          <li>
+            <a
+              href="{% url 'contact' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Contact Us</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          <i class="fas fa-map-marker-alt"></i> 123 Health St., Wellness City,
+          CA<br />
+          <i class="fas fa-phone-alt"></i> +1 (555) 123-4567<br />
+          <i class="fas fa-envelope"></i>
+          <a
+            href="mailto:support@medconnect.com"
+            class="text-white text-decoration-none"
+            >support@medconnect.com</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div
+      class="text-center mt-4"
+      style="border-top: 1px solid rgba(255, 255, 255, 0.3); padding-top: 10px;"
+    >
+      <p style="font-size: 14px; margin: 0;">
+        &copy; 2024 MedConnect. All Rights Reserved.
+      </p>
+      <p style="font-size: 14px; margin: 0;">
+        <a
+          href="{% url 'privacy' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Privacy Policy</a
+        >
+        |
+        <a
+          href="{% url 'terms' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Terms of Service</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Optional FontAwesome Icons for Contact -->
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>
+{% endblock %}

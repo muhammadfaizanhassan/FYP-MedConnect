@@ -8,6 +8,7 @@ from .models import Appointment
 from django.db.models import Q
 from django.contrib.auth.models import User
 from .models import DoctorProfile, PatientProfile
+from datetime import datetime, timedelta
 
 
 # Home view with role-based checks
@@ -54,75 +55,140 @@ def privacy(request):
 def terms(request):
     return render(request, 'terms.html')
 
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from together import Together
+
+@csrf_exempt
+def chatbot(request):
+    if request.method == "POST":
+        query = request.POST.get("query", "")
+
+        # Initialize Together client with API key
+        client = Together(api_key="5df0df3224f6530ce8bfded04afcb6e1c1fd61770039faf86034ea91d2d1308d")
+
+        # Together API logic
+        response = client.chat.completions.create(
+            model="meta-llama/Llama-3.3-70B-Instruct-Turbo",
+            messages=[{"role": "user", "content": query}],
+            max_tokens=100,
+            temperature=0.7,
+            top_p=0.7,
+            top_k=50,
+            repetition_penalty=1,
+            stop=["<|eot_id|>", "<|eom_id|>"],
+            safety_model="meta-llama/Meta-Llama-Guard-3-8B",
+        )
+
+        # Extract response from Together
+        chatbot_response = response.choices[0].message.content
+
+        # Return JSON response
+        return JsonResponse({"response": chatbot_response})
+
+    return render(request, "chatbot.html")
+
 
 # Registration views
 def register_doctor(request):
     if request.method == 'POST':
-        form = DoctorRegistrationForm(request.POST)
+        form = DoctorRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password']
-            )
-            DoctorProfile.objects.create(
-                user=user,
-                specialization=form.cleaned_data['specialization']
-            )
-            messages.success(request, "Doctor registered successfully!")
-            return redirect('login')
+            try:
+                # Create user first
+                user = User.objects.create_user(
+                    username=form.cleaned_data['username'],
+                    email=form.cleaned_data['email'],
+                    password=form.cleaned_data['password1']
+                )
+                
+                # Create doctor profile
+                DoctorProfile.objects.create(
+                    user=user,
+                    specialization=form.cleaned_data['specialization'],
+                    office_location=form.cleaned_data['office_location'],
+                    phone_number=form.cleaned_data.get('phone_number'),
+                    consultation_fee=form.cleaned_data.get('consultation_fee'),
+                    profile_picture=request.FILES.get('profile_picture')
+                )
+                
+                messages.success(request, "Doctor registration successful! Please login.")
+                return redirect('login')
+            except Exception as e:
+                user.delete()  # Rollback user creation if profile creation fails
+                messages.error(request, f"Registration failed: {str(e)}")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = DoctorRegistrationForm()
+    
     return render(request, 'register_doctor.html', {'form': form})
 
 def register_patient(request):
     if request.method == 'POST':
-        form = PatientRegistrationForm(request.POST)
+        form = PatientRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password']
-            )
-            PatientProfile.objects.create(
-                user=user,
-                age=form.cleaned_data['age'],
-                medical_history=form.cleaned_data['medical_history']
-            )
-            messages.success(request, "Patient registered successfully!")
-            return redirect('login')
+            try:
+                # Create user first
+                user = User.objects.create_user(
+                    username=form.cleaned_data['username'],
+                    email=form.cleaned_data['email'],
+                    password=form.cleaned_data['password1']
+                )
+                
+                # Create patient profile
+                PatientProfile.objects.create(
+                    user=user,
+                    age=form.cleaned_data['age'],
+                    medical_history=form.cleaned_data.get('medical_history', ''),
+                    gender=form.cleaned_data.get('gender'),
+                    contact_number=form.cleaned_data.get('contact_number'),
+                    profile_picture=request.FILES.get('profile_picture')
+                )
+                
+                messages.success(request, "Patient registration successful! Please login.")
+                return redirect('login')
+            except Exception as e:
+                user.delete()  # Rollback user creation if profile creation fails
+                messages.error(request, f"Registration failed: {str(e)}")
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = PatientRegistrationForm()
+    
     return render(request, 'register_patient.html', {'form': form})
 
 
-# Login view
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
 
-        # Authenticate the user
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            # Log the user in
             login(request, user)
-
-            # Check if the user is a Doctor or a Patient and redirect accordingly
-            from .models import DoctorProfile, PatientProfile  # Local import
-            if DoctorProfile.objects.filter(user=user).exists():
-                return redirect('doctor_dashboard')  # Redirect to doctor dashboard
-            elif PatientProfile.objects.filter(user=user).exists():
-                return redirect('patient_dashboard')  # Redirect to patient dashboard
-            else:
-                return redirect('home')  # Default redirection if neither
-
+            
+            # Try to get the user's doctor profile
+            doctor_profile = DoctorProfile.objects.filter(user=user).first()
+            if doctor_profile:
+                return redirect('doctor_dashboard')
+            
+            # Try to get the user's patient profile
+            patient_profile = PatientProfile.objects.filter(user=user).first()
+            if patient_profile:
+                return redirect('patient_dashboard')
+            
+            # If no profile exists
+            messages.warning(request, 'No profile found. Please create a profile.')
+            return redirect('home')
         else:
-            # Show an error message for invalid credentials
             messages.error(request, 'Invalid username or password')
 
     return render(request, 'login.html')
+
 
 
 # Logout view
@@ -132,53 +198,97 @@ def logout_user(request):
     return redirect('login')
 
 
-# Doctor Dashboard View
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from datetime import datetime
+
+from .models import Appointment, DoctorProfile, PatientProfile
+
 @login_required
 def doctor_dashboard(request):
+    from main.utils.audit_log import log_phi_access
+    
     try:
         doctor_profile = DoctorProfile.objects.get(user=request.user)
         appointments = Appointment.objects.filter(doctor=doctor_profile).order_by('appointment_date', 'appointment_time')
 
-        if request.method == 'POST':
-            appointment_id = request.POST.get('appointment_id')
-            appointment = Appointment.objects.get(id=appointment_id, doctor=doctor_profile)
-            appointment.is_confirmed = True
-            appointment.save()
-            messages.success(request, "Appointment confirmed successfully.")
+        # Log PHI access for HIPAA compliance
+        log_phi_access(
+            user=request.user,
+            action='view',
+            resource_type='patient_profile',
+            resource_id='dashboard',
+            request=request,
+            details={'dashboard_type': 'doctor', 'appointments_count': appointments.count()}
+        )
 
-        return render(request, 'doctor_dashboard.html', {'appointments': appointments})
-
+        context = {
+            'doctor_profile': doctor_profile,
+            'appointments': appointments,
+            'pending_appointments': appointments.filter(status='pending').count(),
+            'confirmed_appointments': appointments.filter(status='confirmed').count(),
+        }
+        return render(request, 'doctor_dashboard.html', context)
     except DoctorProfile.DoesNotExist:
+        messages.error(request, "You don't have permission to access the doctor dashboard.")
         return redirect('home')
 
 
-
-# Patient Dashboard View
 @login_required
 def patient_dashboard(request):
-    # Check if the logged-in user is a patient
-    if PatientProfile.objects.filter(user=request.user).exists():
-        # Get all appointments for the logged-in patient
+    from main.utils.audit_log import log_phi_access
+    
+    try:
+        patient_profile = PatientProfile.objects.get(user=request.user)
         appointments = Appointment.objects.filter(patient=request.user).order_by('appointment_date', 'appointment_time')
 
-        # Render the template and pass the appointments to it
-        return render(request, 'patient_dashboard.html', {'appointments': appointments})
-    else:
-        return HttpResponseForbidden("You are not authorized to view this page.")
+        # Log PHI access for HIPAA compliance
+        log_phi_access(
+            user=request.user,
+            action='view',
+            resource_type='patient_profile',
+            resource_id=str(patient_profile.id),
+            request=request,
+            details={'dashboard_type': 'patient', 'appointments_count': appointments.count()}
+        )
+
+        context = {
+            'patient_profile': patient_profile,
+            'appointments': appointments,
+            'pending_appointments': appointments.filter(status='pending').count(),
+            'upcoming_appointments': appointments.filter(
+                status='confirmed',
+                appointment_date__gte=datetime.now().date()
+            ),
+        }
+        return render(request, 'patient_dashboard.html', context)
+    except PatientProfile.DoesNotExist:
+        messages.error(request, "You don't have permission to access the patient dashboard.")
+        return redirect('home')
+
 
 
 # Appointment Booking View
 from django.shortcuts import redirect
 from .models import Appointment, DoctorProfile
 
+from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from datetime import datetime
+from .models import Appointment, DoctorProfile, Report  # Import the new Report model
+
 @login_required
 def book_appointment(request):
     search_query = request.GET.get('search', '')
 
-    # Search for doctors by name or specialization
+    # Filter doctors by name or specialization
     if search_query:
-        doctors = DoctorProfile.objects.filter(user__username__icontains=search_query) | \
-                  DoctorProfile.objects.filter(specialization__icontains=search_query)
+        doctors = (
+            DoctorProfile.objects.filter(user__username__icontains=search_query)
+            | DoctorProfile.objects.filter(specialization__icontains=search_query)
+        )
     else:
         doctors = DoctorProfile.objects.all()
 
@@ -186,18 +296,31 @@ def book_appointment(request):
         selected_doctor_id = request.POST.get('doctor')
         appointment_date = request.POST.get('date')
         appointment_time = request.POST.get('time')
+        medical_history = request.POST.get('medical_history')  # if using per-appointment history
+
+        # Get any files from the request (could be multiple if <input type="file" multiple>)
+        uploaded_files = request.FILES.getlist('reports')
 
         try:
             selected_doctor = DoctorProfile.objects.get(id=selected_doctor_id)
-            
+
             # Create the appointment as unconfirmed
-            Appointment.objects.create(
+            appointment = Appointment.objects.create(
                 doctor=selected_doctor,
                 patient=request.user,
                 appointment_date=appointment_date,
                 appointment_time=appointment_time,
                 is_confirmed=False,  # Initially unconfirmed
+                status='pending',
+                medical_history=medical_history or ""  # Ensure it's never None
             )
+
+            # Save any uploaded files
+            for f in uploaded_files:
+                Report.objects.create(
+                    appointment=appointment,
+                    file=f
+                )
 
             messages.success(request, "Appointment booked! Waiting for doctor confirmation.")
             return redirect('patient_dashboard')
@@ -205,39 +328,56 @@ def book_appointment(request):
         except DoctorProfile.DoesNotExist:
             messages.error(request, "The selected doctor does not exist.")
 
-    return render(request, 'book_appointment.html', {'doctors': doctors, 'search_query': search_query})
+    return render(request, 'book_appointment.html', {
+        'doctors': doctors,
+        'search_query': search_query
+    })
 
-# Appointment Confirmation View
+
+
+
 @login_required
-def confirm_appointment(request, appointment_id):
-    appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user)
+def doctor_confirm_appointment(request, appointment_id):
+    doctor_profile = get_object_or_404(DoctorProfile, user=request.user)
+    appointment = get_object_or_404(Appointment, id=appointment_id, doctor=doctor_profile)
 
     if request.method == 'POST':
         appointment.is_confirmed = True
+        appointment.status = 'confirmed'
+        appointment.save()
+        messages.success(request, 'Appointment confirmed successfully!')
+        return redirect('doctor_dashboard')
+
+    # Optional: If you want a confirmation page
+    return render(request, 'confirm_appointment.html', {'appointment': appointment})
+
+
+@login_required
+def patient_confirm_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user)
+    if request.method == 'POST':
+        appointment.is_confirmed = True
+        appointment.status = 'confirmed'
         appointment.save()
         messages.success(request, 'Appointment confirmed! Please proceed with payment.')
         return redirect('payment', appointment_id=appointment.id)
 
     return render(request, 'confirm_appointment.html', {'appointment': appointment})
 
-
-# Payment View
 @login_required
 def payment(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id, patient=request.user, is_confirmed=True)
 
     if request.method == 'POST':
-        # Simulate payment using JazzCash or EasyPaisa
         payment_method = request.POST.get('payment_method')
         if payment_method:
-            # Call the payment API (simulated for now)
             payment_success = process_payment(payment_method, appointment)
 
             if payment_success:
                 appointment.payment_status = True
                 appointment.save()
                 messages.success(request, 'Payment successful!')
-                return redirect('home')
+                return redirect('payment_success')
             else:
                 messages.error(request, 'Payment failed. Please try again.')
 
@@ -245,17 +385,14 @@ def payment(request, appointment_id):
 
 
 def process_payment(payment_method, appointment):
-    # Simulate payment success (In real-world, this would call the API)
+    # Simulate payment success (replace with actual API call)
     if payment_method == 'jazzcash':
-        # Simulate JazzCash payment (replace with API call)
         print(f"Processing JazzCash payment for appointment {appointment.id}")
     elif payment_method == 'easypaisa':
-        # Simulate EasyPaisa payment (replace with API call)
         print(f"Processing EasyPaisa payment for appointment {appointment.id}")
     return True  # Assume payment success for now
 
 
-# Payment Success and Failure Views
 @login_required
 def payment_success(request):
     messages.success(request, 'Your payment was successful!')
@@ -266,6 +403,7 @@ def payment_success(request):
 def payment_failure(request):
     messages.error(request, 'Your payment failed. Please try again.')
     return redirect('payment')
+
 
 from .models import Contact
 

@@ -1,65 +1,124 @@
-{% extends 'base.html' %}
-
-{% block title %}Chatbot - MedConnect{% endblock %}
-
+{% extends 'base.html' %} {% block title %}About Us - MedConnect{% endblock %}
 {% block content %}
-<div style="text-align: center; padding: 40px 20px; background-color: #F4F6F7; border-radius: 10px; margin-bottom: 40px;">
-    <h1 style="font-size: 36px; color: #2C3E50; margin-bottom: 20px;">Chat with Our AI-Powered Medical Assistant</h1>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto;">At MedConnect, we offer an AI-powered chatbot designed to provide you with immediate answers to your health-related questions. Whether you're curious about symptoms, treatments, or general medical advice, our chatbot is here to help 24/7.</p>
-</div>
+<!-- Chatbot Section -->
+<section
+  class="chatbot-section"
+  style="padding: 40px 20px; background-color: #f8f9fa"
+>
+  <div class="container">
+    <!-- Header Section -->
+    <header style="text-align: center; margin-bottom: 30px">
+      <h1 style="color: #2c3e50">Chat with Our AI-Powered Medical Assistant</h1>
+      <p style="color: #7f8c8d; max-width: 600px; margin: 0 auto">
+        Ask health-related questions, check symptoms, and get treatment
+        suggestions from our AI assistant.
+      </p>
+    </header>
 
-<!-- Chatbot Query Form -->
-<div style="max-width: 700px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-    <h2 style="font-size: 28px; color: #34495E; text-align: center; margin-bottom: 20px;">Ask Your Medical Questions</h2>
-    <form method="post">
+    <!-- Chatbot Form -->
+    <div class="form-container" style="max-width: 600px; margin: 0 auto">
+      <form id="chatbot-form" method="POST">
+        <!-- CSRF Token (Django Integration) -->
         {% csrf_token %}
-        
-        <div style="margin-bottom: 20px;">
-            <label for="query" style="font-size: 18px; color: #34495E;">Enter your medical query:</label>
-            <input type="text" id="query" name="query" required
-                   style="width: 100%; padding: 12px; margin-top: 8px; border: 1px solid #BDC3C7; border-radius: 6px; background-color: #ECF0F1;">
-        </div>
-        
-        <div style="text-align: center;">
-            <button type="submit" style="background-color: #3498DB; color: white; padding: 12px 30px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease;">
-                Submit
-            </button>
-        </div>
-    </form>
-</div>
 
-<!-- Chatbot Benefits Section -->
-<div style="text-align: center; margin-top: 50px; padding: 40px 20px; background-color: #F0F4F8; border-radius: 10px;">
-    <h2 style="font-size: 28px; color: #2C3E50; margin-bottom: 20px;">How Can Our Chatbot Help You?</h2>
-    <div style="display: flex; justify-content: space-around;">
-        <div style="width: 30%; text-align: center;">
-            <img src="static/images/symptom_check.svg" alt="Symptom Check" style="width: 100px; margin-bottom: 20px;">
-            <h3 style="font-size: 20px; color: #34495E; margin-bottom: 10px;">Symptom Check</h3>
-            <p style="font-size: 16px; color: #7F8C8D;">Enter your symptoms, and our chatbot will provide you with potential diagnoses or suggest the next steps.</p>
-        </div>
-        <div style="width: 30%; text-align: center;">
-            <img src="static/images/treatment_advice.svg" alt="Treatment Advice" style="width: 100px; margin-bottom: 20px;">
-            <h3 style="font-size: 20px; color: #34495E; margin-bottom: 10px;">Treatment Advice</h3>
-            <p style="font-size: 16px; color: #7F8C8D;">Get treatment options and advice for various medical conditions, straight from our AI assistant.</p>
-        </div>
-        <div style="width: 30%; text-align: center;">
-            <img src="static/images/health_tips.svg" alt="Health Tips" style="width: 100px; margin-bottom: 20px;">
-            <h3 style="font-size: 20px; color: #34495E; margin-bottom: 10px;">Health Tips</h3>
-            <p style="font-size: 16px; color: #7F8C8D;">Receive personalized health and wellness tips based on your queries and conditions.</p>
-        </div>
+        <!-- Input Field -->
+        <label
+          for="query"
+          style="
+            display: block;
+            font-size: 18px;
+            color: #34495e;
+            margin-bottom: 8px;
+          "
+        >
+          Enter your medical query:
+        </label>
+        <input
+          id="query"
+          name="query"
+          type="text"
+          placeholder="Type your question here..."
+          style="
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            margin-bottom: 20px;
+          "
+          required
+        />
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          style="
+            background-color: #3498db;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+          "
+        >
+          Submit
+        </button>
+      </form>
     </div>
-</div>
 
-<!-- How It Works Section -->
-<div style="text-align: center; margin-top: 50px;">
-    <h2 style="font-size: 28px; color: #2C3E50; margin-bottom: 20px;">How It Works</h2>
-    <p style="font-size: 18px; color: #7F8C8D; max-width: 800px; margin: 0 auto 30px;">Our chatbot is powered by the latest AI technology and medical databases, ensuring that the information provided is accurate and up-to-date. Simply enter your query, and our AI assistant will analyze the information and provide you with relevant medical advice or guidance. Please note that the chatbot is for informational purposes only and does not replace professional medical consultation.</p>
-</div>
+    <!-- Chatbot Response Section -->
+    <div id="response-container" style="margin-top: 30px; display: none">
+      <div
+        class="response-card"
+        style="
+          padding: 20px;
+          background-color: white;
+          border-radius: 6px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <h2 style="color: #34495e">Chatbot Response</h2>
+        <p id="chatbot-response" style="color: #7f8c8d"></p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- Call to Action -->
-<div style="text-align: center; margin-top: 50px;">
-    <a href="{% url 'register_patient' %}" style="background-color: #2ECC71; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; cursor: pointer; transition: background-color 0.3s ease;">Register as a Patient</a>
-    <a href="{% url 'register_doctor' %}" style="background-color: #3498DB; color: white; padding: 15px 30px; font-size: 18px; border: none; border-radius: 6px; text-decoration: none; margin-left: 20px; cursor: pointer; transition: background-color 0.3s ease;">Join as a Doctor</a>
-</div>
+<!-- JavaScript Section -->
+<script>
+  // Handle form submission with AJAX
+  document
+    .getElementById("chatbot-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent page reload
 
+      // Get user input
+      const query = document.getElementById("query").value;
+      const responseContainer = document.getElementById("response-container");
+      const responseText = document.getElementById("chatbot-response");
+
+      // Show loading indicator
+      responseContainer.style.display = "block";
+      responseText.textContent = "Thinking...";
+
+      // AJAX POST request to server
+      fetch("{% url 'chatbot' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "X-CSRFToken": "{{ csrf_token }}",
+        },
+        body: new URLSearchParams({ query: query }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Update response text
+          responseText.textContent = data.response;
+        })
+        .catch((error) => {
+          // Handle errors
+          responseText.textContent = "An error occurred. Please try again.";
+        });
+    });
+</script>
 {% endblock %}

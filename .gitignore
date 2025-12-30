@@ -1,11 +1,86 @@
-# Django specific
-*.pyc
+# Python
 __pycache__/
-db.sqlite3
-/media
-/static
-.env
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# Environment
-.env
+# Django
 *.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+/static
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Model files (too large for git)
+models/
+kidneymodel/
+*.h5
+*.pb
+*.gguf
+*.pth
+*.pt
+*.onnx
+
+# Test files
+test_encryption.py
+*_test.py
+test_*.py
+
+# Logs
+*.log
+security_audit.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Media files (user uploads)
+media/
+patient_reports/
+
+# Scripts (keep only .ps1)
+run_server.bat

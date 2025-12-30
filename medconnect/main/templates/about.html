@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - MedConnect{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-light text-center" style="background: linear-gradient(90deg,rgb(245, 247, 248));">
+    <div class="container">
+        <h1 class="display-4 fw-bold text-primary mb-3">About MedConnect</h1>
+        <p class="lead text-secondary mx-auto" style="max-width: 800px;">
+            MedConnect is a platform designed to bring patients and medical professionals together, creating a seamless healthcare experience. We aim to revolutionize the way healthcare is accessed and managed by providing a comprehensive digital platform that allows patients to connect with top-tier doctors, book appointments with ease, and manage their health effectively.
+        </p>
+    </div>
+</section>
+
+<!-- Our Mission Section -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold text-primary mb-4">Our Mission</h2>
+        <p class="lead text-secondary mx-auto mb-4" style="max-width: 900px;">
+            At MedConnect, our mission is to empower individuals to take control of their health by making healthcare more accessible, efficient, and patient-centered. We believe in a future where everyone has access to the best medical care, regardless of their location or circumstances. By leveraging technology, we are closing the gap between patients and healthcare providers, ensuring that quality medical advice is just a click away.
+        </p>
+    </div>
+</section>
+
+<!-- Why Choose MedConnect Section -->
+<section class="py-5 bg-white">
+    <div class="container text-center">
+        <h2 class="fw-bold text-primary mb-4">Why Choose MedConnect?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <img src="static/images/doctor_network.svg" alt="Doctor Network" class="mb-3" style="width: 80px;">
+                <h3 class="fw-bold text-dark">Extensive Doctor Network</h3>
+                <p class="text-secondary">
+                    With over 500 verified medical professionals across various specialties, we ensure that patients have access to the best healthcare providers, wherever they are.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <img src="static/images/secure_data.svg" alt="Secure Data" class="mb-3" style="width: 80px;">
+                <h3 class="fw-bold text-dark">Secure Health Data</h3>
+                <p class="text-secondary">
+                    Your medical records and data are securely stored, with state-of-the-art encryption methods ensuring your privacy and confidentiality at all times.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <img src="static/images/24_7_support.svg" alt="24/7 Support" class="mb-3" style="width: 80px;">
+                <h3 class="fw-bold text-dark">24/7 Access to Care</h3>
+                <p class="text-secondary">
+                    Our platform allows you to book appointments, access health records, and communicate with healthcare providers anytime, from any location.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Vision Section -->
+<section class="py-5 bg-light" style="background: linear-gradient(90deg, #2980b9, #34495e);">
+    <div class="container text-center">
+        <h2 class="fw-bold text-primary mb-4">Our Vision</h2>
+        <p class="lead text-secondary mx-auto mb-4" style="max-width: 900px;">
+            We envision a future where healthcare is not a privilege but a basic right for all. By harnessing the power of technology, we aim to create a world where everyone, regardless of their background, has easy access to the best medical advice, treatments, and services. Our goal is to make healthcare more efficient, effective, and personalized to meet the unique needs of each individual.
+        </p>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-5 text-center" style="background-color:rgb(255, 255, 255);">
+    <div class="container">
+        <h2 class="fw-bold text-primary mb-3">Join MedConnect Today</h2>
+        <p class="lead text-secondary mx-auto mb-4" style="max-width: 800px;">
+            Whether you are a patient seeking the best care or a medical professional looking to expand your reach, MedConnect is here to support you. Start your health journey with us and experience the future of healthcare.
+        </p>
+        <a href="{% url 'register_patient' %}" class="btn btn-success btn-lg px-4 me-3">Register as a Patient</a>
+        <a href="{% url 'register_doctor' %}" class="btn btn-outline-primary btn-lg px-4">Join as a Doctor</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer
+  class="footer mt-auto py-4"
+  style="background: linear-gradient(to right, #1f4037, #99f2c8); color: #fff;"
+>
+  <div class="container">
+    <div class="row text-center text-md-start">
+      <!-- About Section -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">About MedConnect</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          MedConnect is your trusted partner in healthcare, providing
+          top-notch medical services and solutions for your well-being. Stay
+          connected with us for the latest updates and resources.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Quick Links</h5>
+        <ul style="list-style: none; padding: 0;">
+          <li>
+            <a
+              href="{% url 'home' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="{% url 'about' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >About Us</a
+            >
+          </li>
+         
+          <li>
+            <a
+              href="{% url 'contact' %}"
+              class="text-white text-decoration-none"
+              style="font-size: 14px; line-height: 2;"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="col-md-4 mb-4">
+        <h5 class="fw-bold" style="color: #fff;">Contact Us</h5>
+        <p style="font-size: 14px; line-height: 1.6;">
+          <i class="fas fa-map-marker-alt"></i> 123 Health St., Wellness City,
+          CA<br />
+          <i class="fas fa-phone-alt"></i> +1 (555) 123-4567<br />
+          <i class="fas fa-envelope"></i>
+          <a
+            href="mailto:support@medconnect.com"
+            class="text-white text-decoration-none"
+            >support@medconnect.com</a
+          >
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div
+      class="text-center mt-4"
+      style="border-top: 1px solid rgba(255, 255, 255, 0.3); padding-top: 10px;"
+    >
+      <p style="font-size: 14px; margin: 0;">
+        &copy; 2024 MedConnect. All Rights Reserved.
+      </p>
+      <p style="font-size: 14px; margin: 0;">
+        <a
+          href="{% url 'privacy' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Privacy Policy</a
+        >
+        |
+        <a
+          href="{% url 'terms' %}"
+          class="text-white text-decoration-none"
+          style="font-size: 14px;"
+          >Terms of Service</a
+        >
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- Optional FontAwesome Icons for Contact -->
+<script
+  src="https://kit.fontawesome.com/a076d05399.js"
+  crossorigin="anonymous"
+></script>
+
+{% endblock %}

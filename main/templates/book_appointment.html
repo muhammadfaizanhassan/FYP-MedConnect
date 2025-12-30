@@ -1,52 +1,336 @@
 {% extends 'base.html' %}
-
-{% block title %}Book an Appointment - MedConnect{% endblock %}
+{% block title %}Book Appointment - MedConnect{% endblock %}
 
 {% block content %}
-<h1 style="font-size: 32px; text-align: center; color: #2C3E50; margin-bottom: 20px;">Book an Appointment</h1>
-<p style="font-size: 18px; text-align: center; color: #7F8C8D; margin-bottom: 30px;">Find the right doctor by searching for their name or specialization, and schedule an appointment at your convenience.</p>
+<section class="booking-section py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header text-center mb-5">
+            <h1 class="page-title">
+                <i class="fas fa-calendar-check"></i> Book an Appointment
+            </h1>
+            <p class="page-subtitle">Find the right doctor and schedule your consultation</p>
+        </div>
 
-<!-- Search Form -->
-<form method="get" style="max-width: 600px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center;">
-    <input type="text" name="search" placeholder="Search for a doctor..." value="{{ search_query }}" 
-           style="width: 80%; padding: 10px; border: 1px solid #BDC3C7; border-radius: 4px; margin-right: 10px; font-size: 16px;">
-    <button type="submit" style="background-color: #3498DB; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Search</button>
-</form>
+        <!-- Search Section -->
+        <div class="search-section card-modern mb-5">
+            <form method="get" class="search-form">
+                <div class="input-group">
+                    <span class="input-icon">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="form-control search-input" 
+                        placeholder="Search by doctor name or specialization..." 
+                        value="{{ search_query }}"
+                    >
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
 
-<form method="post" style="max-width: 600px; margin: 0 auto; background-color: #F8F9F9; padding: 30px; border-radius: 10px; box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
-  {% csrf_token %}
-  
-  <div style="margin-bottom: 20px;">
-    <label for="doctor" style="font-size: 18px; color: #34495E;">Select Doctor:</label>
-    <select id="doctor" name="doctor" required
-            style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #BDC3C7; border-radius: 4px; background-color: #ECF0F1;">
-      {% for doctor in doctors %}
-        <option value="{{ doctor.id }}">{{ doctor.user.username }} ({{ doctor.specialization }}) - Location: {{ doctor.office_location }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  
-  <div style="margin-bottom: 20px;">
-    <label for="date" style="font-size: 18px; color: #34495E;">Select Date:</label>
-    <input type="date" id="date" name="date" required
-           style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #BDC3C7; border-radius: 4px; background-color: #ECF0F1;">
-  </div>
+        <!-- Booking Form -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="booking-card card-modern">
+                    <div class="card-header-modern mb-4">
+                        <h2 class="card-title">Appointment Details</h2>
+                        <p class="card-subtitle">Fill in the details to book your appointment</p>
+                    </div>
 
-  <div style="margin-bottom: 20px;">
-    <label for="time" style="font-size: 18px; color: #34495E;">Select Time:</label>
-    <input type="time" id="time" name="time" required
-           style="width: 100%; padding: 12px; font-size: 16px; border: 1px solid #BDC3C7; border-radius: 4px; background-color: #ECF0F1;">
-  </div>
-  
-  <div style="text-align: center;">
-    <button type="submit" style="background-color: #a80af1; color: white; padding: 12px 30px; font-size: 18px; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease;">
-      Book Appointment
-    </button>
-  </div>
-</form>
+                    <form method="POST" enctype="multipart/form-data" class="booking-form">
+                        {% csrf_token %}
 
-{% if not doctors %}
-    <p style="text-align: center; font-size: 16px; color: #E74C3C;">No doctors found matching your search criteria.</p>
-{% endif %}
+                        <!-- Doctor Selection -->
+                        <div class="form-group">
+                            <label for="doctor" class="form-label">
+                                <i class="fas fa-user-md"></i> Select Doctor
+                            </label>
+                            <select id="doctor" name="doctor" class="form-control" required>
+                                <option value="" disabled selected>Choose a doctor...</option>
+                                {% for doctor in doctors %}
+                                <option value="{{ doctor.id }}">
+                                    Dr. {{ doctor.user.username }} - {{ doctor.specialization }} 
+                                    {% if doctor.office_location %}({{ doctor.office_location }}){% endif %}
+                                    {% if doctor.consultation_fee %}- ${{ doctor.consultation_fee }}{% endif %}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% if not doctors %}
+                            <div class="alert alert-warning mt-2">
+                                <i class="fas fa-exclamation-triangle"></i> No doctors found. Please try a different search.
+                            </div>
+                            {% endif %}
+                        </div>
 
+                        <div class="row g-3">
+                            <!-- Date Selection -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="date" class="form-label">
+                                        <i class="fas fa-calendar"></i> Appointment Date
+                                    </label>
+                                    <input 
+                                        type="date" 
+                                        id="date" 
+                                        name="date" 
+                                        class="form-control" 
+                                        required
+                                        min="{{ today|date:'Y-m-d' }}"
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Time Selection -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="time" class="form-label">
+                                        <i class="fas fa-clock"></i> Appointment Time
+                                    </label>
+                                    <input 
+                                        type="time" 
+                                        id="time" 
+                                        name="time" 
+                                        class="form-control" 
+                                        required
+                                    >
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical History -->
+                        <div class="form-group">
+                            <label for="medical_history" class="form-label">
+                                <i class="fas fa-file-medical"></i> Medical History / Notes
+                            </label>
+                            <textarea 
+                                id="medical_history" 
+                                name="medical_history" 
+                                class="form-control" 
+                                rows="5"
+                                placeholder="Please provide any relevant medical history, symptoms, or notes for the doctor..."
+                            ></textarea>
+                            <small class="form-text text-muted">This information will help the doctor prepare for your consultation.</small>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-file-upload"></i> Upload Medical Reports (Optional)
+                            </label>
+                            <div class="file-upload-area">
+                                <input 
+                                    type="file" 
+                                    name="reports" 
+                                    id="reports" 
+                                    multiple 
+                                    class="file-input"
+                                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                >
+                                <label for="reports" class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Click to upload or drag and drop</span>
+                                    <small>PDF, JPG, PNG, DOC (Max 10MB each)</small>
+                                </label>
+                                <div id="file-list" class="file-list"></div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-calendar-check"></i> Book Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.booking-section {
+    background: var(--bg-secondary);
+    min-height: calc(100vh - 200px);
+}
+
+.page-header {
+    margin-bottom: var(--spacing-3xl);
+}
+
+.page-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+.page-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
+.search-section {
+    padding: var(--spacing-xl);
+}
+
+.search-form {
+    margin: 0;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.input-icon {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--gray-100);
+    border-radius: var(--radius-lg);
+    color: var(--primary);
+    font-size: 1.25rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.125rem;
+}
+
+.booking-card {
+    padding: var(--spacing-2xl);
+}
+
+.booking-form {
+    margin-top: var(--spacing-xl);
+}
+
+.file-upload-area {
+    position: relative;
+}
+
+.file-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-3xl);
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-xl);
+    background: var(--gray-50);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-align: center;
+}
+
+.file-label:hover {
+    border-color: var(--primary);
+    background: var(--bg-primary);
+}
+
+.file-label i {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.file-label span {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.file-label small {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.file-list {
+    margin-top: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+    background: var(--gray-100);
+    border-radius: var(--radius-lg);
+}
+
+.file-item-name {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--text-primary);
+}
+
+.form-actions {
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-xl);
+    border-top: 2px solid var(--gray-200);
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .search-input {
+        width: 100%;
+    }
+    
+    .booking-card {
+        padding: var(--spacing-lg);
+    }
+}
+</style>
+
+<script>
+document.getElementById('reports')?.addEventListener('change', function(e) {
+    const fileList = document.getElementById('file-list');
+    fileList.innerHTML = '';
+    
+    Array.from(e.target.files).forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.innerHTML = `
+            <div class="file-item-name">
+                <i class="fas fa-file"></i>
+                <span>${file.name}</span>
+            </div>
+            <span class="text-muted">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+        `;
+        fileList.appendChild(fileItem);
+    });
+});
+</script>
 {% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Scan{% endblock %}
+
+{% block content %}
+<section class="py-5" style="background: linear-gradient(90deg, #2980b9, #34495e);">
+    <div class="container" >
+        <!-- Upload Section -->
+        <div class="upload-section" style="background: linear-gradient(90deg,rgb(28, 173, 218),rgb(32, 130, 228));">
+            <h2 class="upload-title">Upload a Scan for Analysis</h2>
+            <p class="upload-description" style="color: white;">
+                Quickly upload your scan for secure analysis. Our system will process the image and provide detailed feedback.
+            </p>
+
+            <form method="post" enctype="multipart/form-data" class="upload-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+                <button type="submit" class="btn-custom">Upload and Analyze</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Styles for Upload Section -->
+<style>
+    /* General Section Styling */
+    body {
+        font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .upload-section {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+        text-align: center;
+    }
+
+    .upload-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2C3E50;
+        margin-bottom: 15px;
+    }
+
+    .upload-description {
+        font-size: 16px;
+        color: #7F8C8D;
+        margin-bottom: 25px;
+        line-height: 1.5;
+    }
+
+    /* Form Styling */
+    .upload-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: left;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 10px;
+        border: 1px solid #CED6E0;
+        border-radius: 6px;
+        background-color: #F1F3F4;
+        transition: all 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+        border-color: #1E90FF;
+        box-shadow: 0 0 5px rgba(30, 144, 255, 0.5);
+        background-color: #FFFFFF;
+    }
+
+    /* Button Styling */
+    .btn-custom {
+        background-color: #1E90FF;
+        color: #FFFFFF;
+        padding: 12px 30px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .upload-section {
+            padding: 20px;
+        }
+
+        .upload-title {
+            font-size: 24px;
+        }
+
+        .btn-custom {
+            font-size: 14px;
+            padding: 10px 25px;
+        }
+    }
+</style>
+{% endblock %}

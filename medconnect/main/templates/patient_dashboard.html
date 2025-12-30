@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block content %}
+<h2 style="font-size: 24px; margin-bottom: 20px;">Welcome to the Patient Dashboard</h2>
+<p style="font-size: 18px; margin-bottom: 30px;">Here you can view your upcoming appointments and their payment status.</p>
+
+{% if appointments %}
+    <h3 style="font-size: 20px; margin-bottom: 20px;">Your Appointments</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 16px; text-align: left;">
+        <thead>
+            <tr style="background-color: #009879; color: white;">
+                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Doctor</th>
+                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Specialization</th>
+                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Date</th>
+                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Time</th>
+                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Confirmation Status</th>
+                <th style="padding: 12px 15px; border: 1px solid #dddddd;">Payment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr style="border-bottom: 1px solid #dddddd;">
+                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.doctor.user.username }}</td>
+                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.doctor.specialization }}</td>
+                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.appointment_date }}</td>
+                <td style="padding: 12px 15px; border: 1px solid #dddddd;">{{ appointment.appointment_time }}</td>
+                <td style="padding: 12px 15px; border: 1px solid #dddddd;">
+                    {% if appointment.is_confirmed %}
+                        <span style="color: green; font-weight: bold;">Confirmed</span>
+                    {% else %}
+                        <span style="color: orange; font-weight: bold;">Pending Confirmation</span>
+                    {% endif %}
+                </td>
+                <td style="padding: 12px 15px; border: 1px solid #dddddd;">
+                    {% if appointment.is_confirmed and not appointment.payment_status %}
+                        <a href="{% url 'payment' appointment.id %}" style="background-color: #4CAF50; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">Proceed to Payment</a>
+                    {% elif appointment.payment_status %}
+                        <span style="color: green; font-weight: bold;">Paid</span>
+                    {% else %}
+                        <span style="color: orange; font-weight: bold;">Awaiting Confirmation</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p style="font-size: 16px; color: #666;">You have no upcoming appointments.</p>
+{% endif %}
+
+{% endblock %}
